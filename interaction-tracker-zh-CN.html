@@ -1,0 +1,1347 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>亲子互动正负比例检测表</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.2em;
+            margin-bottom: 10px;
+        }
+        
+        .header .subtitle {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        /* 标签页导航 */
+        .tab-navigation {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .tab-button {
+            flex: 1;
+            padding: 18px;
+            background: none;
+            border: none;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: #666;
+            font-family: inherit;
+        }
+        
+        .tab-button.active {
+            background: white;
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+        }
+        
+        .tab-button:hover {
+            background: #e9ecef;
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 40px;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .info-box {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border-left: 6px solid #e17055;
+        }
+        
+        .info-box h2 {
+            color: #d63031;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+        
+        .info-box ul {
+            list-style: none;
+            margin-top: 10px;
+        }
+        
+        .info-box li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+            line-height: 1.6;
+        }
+        
+        .info-box li:before {
+            content: "💡";
+            position: absolute;
+            left: 0;
+        }
+        
+        .date-selector {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .date-selector label {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-right: 15px;
+            color: #333;
+        }
+        
+        .date-selector input,
+        .date-selector select {
+            padding: 10px 15px;
+            font-size: 1.1em;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            outline: none;
+            font-family: inherit;
+        }
+        
+        .tracker-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .tracker-box {
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .positive-box {
+            background: linear-gradient(135deg, #a8e6cf 0%, #56cc9d 100%);
+            border: 3px solid #2ecc71;
+        }
+        
+        .negative-box {
+            background: linear-gradient(135deg, #ffb3ba 0%, #ff6b6b 100%);
+            border: 3px solid #e74c3c;
+        }
+        
+        .tracker-box h3 {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .counter-display {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .counter-number {
+            font-size: 4em;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        
+        .positive-box .counter-number {
+            color: #27ae60;
+        }
+        
+        .negative-box .counter-number {
+            color: #c0392b;
+        }
+        
+        .counter-label {
+            font-size: 1.1em;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 12px 30px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+        
+        .btn-add {
+            background: #2ecc71;
+            color: white;
+        }
+        
+        .btn-add:hover {
+            background: #27ae60;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(46,204,113,0.4);
+        }
+        
+        .btn-subtract {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .btn-subtract:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(231,76,60,0.4);
+        }
+        
+        .btn-reset {
+            background: #95a5a6;
+            color: white;
+            margin-top: 10px;
+            width: 100%;
+        }
+        
+        .btn-reset:hover {
+            background: #7f8c8d;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+        
+        .btn-secondary:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        .examples {
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(255,255,255,0.5);
+            border-radius: 8px;
+            font-size: 0.9em;
+        }
+        
+        .examples h4 {
+            margin-bottom: 8px;
+            color: #2c3e50;
+        }
+        
+        .examples ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .examples li {
+            padding: 4px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .examples li:before {
+            content: "▸";
+            position: absolute;
+            left: 5px;
+            font-weight: bold;
+        }
+        
+        .result-section {
+            background: linear-gradient(135deg, #e8f4f8 0%, #d4e6f1 100%);
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 30px;
+            border: 3px solid #3498db;
+        }
+        
+        .result-section h2 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+        
+        .ratio-display {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .ratio-number {
+            font-size: 3em;
+            font-weight: bold;
+            color: #3498db;
+            margin: 10px 0;
+        }
+        
+        .ratio-bar {
+            width: 100%;
+            height: 40px;
+            background: #ecf0f1;
+            border-radius: 20px;
+            overflow: hidden;
+            margin: 20px 0;
+            position: relative;
+        }
+        
+        .ratio-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #2ecc71 0%, #27ae60 100%);
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .ratio-bar-negative {
+            position: absolute;
+            right: 0;
+            top: 0;
+            height: 100%;
+            background: linear-gradient(90deg, #e74c3c 0%, #c0392b 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .feedback {
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+        
+        .feedback-excellent {
+            background: #d5f4e6;
+            border-left: 5px solid #2ecc71;
+            color: #145a32;
+        }
+        
+        .feedback-good {
+            background: #fff9e6;
+            border-left: 5px solid #f39c12;
+            color: #7d6608;
+        }
+        
+        .feedback-warning {
+            background: #fadbd8;
+            border-left: 5px solid #e74c3c;
+            color: #78281f;
+        }
+        
+        .tips-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .tip-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            border-left: 5px solid #667eea;
+        }
+        
+        .tip-card h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+        
+        .tip-card p {
+            color: #555;
+            line-height: 1.6;
+        }
+        
+        /* 周报告样式 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            border: 2px solid #667eea30;
+        }
+        
+        .stat-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 8px;
+        }
+        
+        .stat-label {
+            font-size: 1em;
+            color: #666;
+        }
+        
+        .chart-container {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .chart-title {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        
+        .line-chart {
+            height: 220px;
+            display: flex;
+            align-items: flex-end;
+            gap: 15px;
+            padding: 20px 0;
+            position: relative;
+        }
+        
+        .line-bar {
+            flex: 1;
+            background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+            border-radius: 8px 8px 0 0;
+            min-height: 10px;
+            position: relative;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .line-bar:hover {
+            opacity: 0.8;
+            transform: translateY(-5px);
+        }
+        
+        .line-bar-label {
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.9em;
+            color: #666;
+            white-space: nowrap;
+        }
+        
+        .line-bar-value {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.85em;
+            font-weight: bold;
+            color: #667eea;
+            white-space: nowrap;
+        }
+        
+        /* 历史记录样式 */
+        .history-section {
+            margin-top: 0;
+            padding: 0;
+        }
+        
+        .history-section h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+        
+        .history-list {
+            list-style: none;
+        }
+        
+        .history-item {
+            background: #f8f9fa;
+            padding: 18px 20px;
+            margin-bottom: 12px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+        }
+        
+        .history-item:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+        
+        .history-date {
+            font-weight: bold;
+            color: #2c3e50;
+            font-size: 1.05em;
+        }
+        
+        .history-ratio {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 6px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9em;
+            margin-left: 15px;
+            transition: all 0.3s;
+        }
+        
+        .delete-btn:hover {
+            background: #c82333;
+            transform: scale(1.05);
+        }
+        
+        @media print {
+            body {
+                background: white;
+            }
+            .btn, .tab-navigation {
+                display: none;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .tracker-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .tab-content {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 1.6em;
+            }
+            
+            .counter-number {
+                font-size: 3em;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .tab-button {
+                font-size: 0.9em;
+                padding: 12px 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 亲子互动正负比例检测表</h1>
+            <p class="subtitle">追踪每日与孩子的正负向互动，达成科学建议的 5:1 黄金比例</p>
+        </div>
+
+        <div class="tab-navigation">
+            <button class="tab-button active" onclick="switchTab('daily')">📅 每日记录</button>
+            <button class="tab-button" onclick="switchTab('report')">📊 周报告</button>
+            <button class="tab-button" onclick="switchTab('history')">📜 完整记录</button>
+        </div>
+
+        <!-- 每日记录页面 -->
+        <div id="dailyTab" class="tab-content active">
+            <div class="info-box">
+                <h2>🧠 什么是负面偏误？</h2>
+                <ul>
+                    <li>大脑天生对<strong>负面信息</strong>更敏感、记得更深</li>
+                    <li>科学研究:需要 <strong>5个正面互动</strong> 才能抵消 <strong>1个负面互动</strong></li>
+                    <li>孩子的大脑会放大批评、缩小称赞</li>
+                    <li>长期负面比例过高 → 焦虑、低自尊、亲子关系疏离</li>
+                    <li><strong>好消息：</strong>通过刻意练习，我们可以改变互动模式！</li>
+                </ul>
+            </div>
+            
+            <div class="date-selector">
+                <label for="date-input">📅 记录日期：</label>
+                <input type="date" id="date-input">
+            </div>
+            
+            <div class="tracker-section">
+                <!-- 正向互动 -->
+                <div class="tracker-box positive-box">
+                    <h3>✅ 正向互动</h3>
+                    <div class="counter-display">
+                        <div class="counter-label">今日累计</div>
+                        <div class="counter-number" id="positive-count">0</div>
+                        <div class="counter-label">次</div>
+                    </div>
+                    <div class="button-group">
+                        <button class="btn btn-add" onclick="addPositive()">➕ 增加</button>
+                        <button class="btn btn-subtract" onclick="subtractPositive()">➖ 减少</button>
+                    </div>
+                    <button class="btn btn-reset" onclick="resetPositive()">🔄 重置</button>
+                    
+                    <div class="examples">
+                        <h4>正向互动包括:</h4>
+                        <ul>
+                            <li>具体称赞行为</li>
+                            <li>肢体亲密(拥抱、摸头)</li>
+                            <li>专注陪伴(放下手机)</li>
+                            <li>鼓励和肯定</li>
+                            <li>耐心倾听</li>
+                            <li>微笑和眼神接触</li>
+                            <li>表达感谢</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- 负向互动 -->
+                <div class="tracker-box negative-box">
+                    <h3>❌ 负向互动</h3>
+                    <div class="counter-display">
+                        <div class="counter-label">今日累计</div>
+                        <div class="counter-number" id="negative-count">0</div>
+                        <div class="counter-label">次</div>
+                    </div>
+                    <div class="button-group">
+                        <button class="btn btn-add" onclick="addNegative()">➕ 增加</button>
+                        <button class="btn btn-subtract" onclick="subtractNegative()">➖ 减少</button>
+                    </div>
+                    <button class="btn btn-reset" onclick="resetNegative()">🔄 重置</button>
+                    
+                    <div class="examples">
+                        <h4>负向互动包括:</h4>
+                        <ul>
+                            <li>批评、责骂</li>
+                            <li>负面标签(「你很笨」)</li>
+                            <li>比较(「你看别人」)</li>
+                            <li>不耐烦的语气</li>
+                            <li>忽视、冷漠</li>
+                            <li>威胁、恐吓</li>
+                            <li>翻白眼、叹气</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 结果分析 -->
+            <div class="result-section">
+                <h2>📈 今日互动比例分析</h2>
+                
+                <div class="ratio-display">
+                    <div style="color: #666; margin-bottom: 10px;">正向 : 负向 比例</div>
+                    <div class="ratio-number" id="ratio-display">-- : --</div>
+                </div>
+                
+                <div class="ratio-bar">
+                    <div class="ratio-bar-fill" id="ratio-bar-positive" style="width: 50%;">
+                        <span id="positive-percent">0</span>
+                    </div>
+                    <div class="ratio-bar-negative" id="ratio-bar-negative" style="width: 50%;">
+                        <span id="negative-percent">0</span>
+                    </div>
+                </div>
+                
+                <div id="feedback" class="feedback"></div>
+            </div>
+            
+            <!-- 实用建议 -->
+            <div class="tips-section">
+                <div class="tip-card">
+                    <h4>💡 提升正向互动</h4>
+                    <p>每天设定「称赞闹钟」，每2小时提醒自己主动找孩子的好行为来肯定。记住：称赞要具体！</p>
+                </div>
+                
+                <div class="tip-card">
+                    <h4>🎯 减少负向互动</h4>
+                    <p>想批评前先深呼吸3秒，问自己：「这句话10年后孩子还会记得吗？」换个方式表达会更好。</p>
+                </div>
+                
+                <div class="tip-card">
+                    <h4>🌟 睡前仪式</h4>
+                    <p>每晚睡前和孩子分享「今天3件好事」，刻意在大脑植入正向记忆，抵消负面偏误。</p>
+                </div>
+                
+                <div class="tip-card">
+                    <h4>📝 记录反思</h4>
+                    <p>每天花2分钟记录，比例不理想时不要自责，这是觉察的开始。明天再努力就好！</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 周报告页面 -->
+        <div id="reportTab" class="tab-content">
+            <div style="text-align: center; margin-bottom: 30px;">
+                <h2 style="color: #667eea; margin-bottom: 10px;">📊 每周互动分析报告</h2>
+                <p style="color: #666;">追踪您的进步，建立更好的亲子关系</p>
+            </div>
+
+            <div class="date-selector">
+                <label for="weekSelect">选择周次：</label>
+                <select id="weekSelect" onchange="loadWeekReport()">
+                    <option value="current">本周</option>
+                    <option value="last">上周</option>
+                    <option value="last2">两周前</option>
+                    <option value="last3">三周前</option>
+                </select>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="weekPositive">0</div>
+                    <div class="stat-label">正向互动总次数</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="weekNegative">0</div>
+                    <div class="stat-label">负向互动总次数</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="weekAvgRatio">0:0</div>
+                    <div class="stat-label">平均比例</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="weekBestDay">--</div>
+                    <div class="stat-label">最佳表现日</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="weekRecordDays">0</div>
+                    <div class="stat-label">记录天数</div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-title">📈 本周每日比例趋势</div>
+                <div class="line-chart" id="weekLineChart"></div>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-title">📊 本周正负向互动对比</div>
+                <div class="line-chart" id="weekBarChart" style="height: 180px;"></div>
+            </div>
+        </div>
+
+        <!-- 完整记录页面 -->
+        <div id="historyTab" class="tab-content">
+            <div class="history-section">
+                <h3>📚 所有历史记录</h3>
+                <div class="button-group" style="margin-bottom: 25px;">
+                    <button class="btn btn-secondary" onclick="exportPDF()">📄 导出 PDF</button>
+                    <button class="btn btn-secondary" onclick="window.print()">🖨️ 打印记录</button>
+                </div>
+                <ul class="history-list" id="history-list">
+                    <li style="text-align: center; color: #999; padding: 20px;">尚无记录，开始今天的追踪吧！</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- 引入 jsPDF 和 AutoTable -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    
+    <script>
+        // 自定义对话框函数
+        function showConfirmDialog(message, onConfirm) {
+            const modal = document.createElement('div');
+            modal.className = 'fixed';
+            modal.style.cssText = 'position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 9999;';
+            modal.innerHTML = `
+                <div style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); max-width: 400px; width: 90%; margin: 20px;">
+                    <p style="color: #2c3e50; margin-bottom: 25px; font-size: 1.1em; line-height: 1.6;">${message}</p>
+                    <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                        <button style="padding: 10px 20px; background: #95a5a6; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 1em; font-weight: bold;" onclick="this.closest('.fixed').remove()">取消</button>
+                        <button style="padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 1em; font-weight: bold;" onclick="this.closest('.fixed').remove(); (${onConfirm.toString()})()">确定</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        function showAlert(message) {
+            const modal = document.createElement('div');
+            modal.className = 'fixed';
+            modal.style.cssText = 'position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 9999;';
+            modal.innerHTML = `
+                <div style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); max-width: 400px; width: 90%; margin: 20px;">
+                    <p style="color: #2c3e50; margin-bottom: 25px; font-size: 1.1em; line-height: 1.6;">${message}</p>
+                    <div style="display: flex; justify-content: flex-end;">
+                        <button style="padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 1em; font-weight: bold;" onclick="this.closest('.fixed').remove()">确定</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        // 初始化
+        let positiveCount = 0;
+        let negativeCount = 0;
+        let history = JSON.parse(localStorage.getItem('interactionHistory-zh-CN')) || [];
+        
+        // 设定今天日期
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('date-input').value = today;
+        
+        // 载入今天的记录
+        loadTodayData();
+        updateDisplay();
+        displayHistory();
+        
+        // 切换标签页
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            if (tabName === 'daily') {
+                document.getElementById('dailyTab').classList.add('active');
+                document.querySelectorAll('.tab-button')[0].classList.add('active');
+            } else if (tabName === 'report') {
+                document.getElementById('reportTab').classList.add('active');
+                document.querySelectorAll('.tab-button')[1].classList.add('active');
+                loadWeekReport();
+            } else if (tabName === 'history') {
+                document.getElementById('historyTab').classList.add('active');
+                document.querySelectorAll('.tab-button')[2].classList.add('active');
+                displayHistory();
+            }
+        }
+        
+        function addPositive() {
+            positiveCount++;
+            updateDisplay();
+            saveData();
+        }
+        
+        function subtractPositive() {
+            if (positiveCount > 0) {
+                positiveCount--;
+                updateDisplay();
+                saveData();
+            }
+        }
+        
+        function resetPositive() {
+            showConfirmDialog('确定要重置正向计数吗？', function() {
+                positiveCount = 0;
+                updateDisplay();
+                saveData();
+            });
+        }
+        
+        function addNegative() {
+            negativeCount++;
+            updateDisplay();
+            saveData();
+        }
+        
+        function subtractNegative() {
+            if (negativeCount > 0) {
+                negativeCount--;
+                updateDisplay();
+                saveData();
+            }
+        }
+        
+        function resetNegative() {
+            showConfirmDialog('确定要重置负向计数吗？', function() {
+                negativeCount = 0;
+                updateDisplay();
+                saveData();
+            });
+        }
+        
+        function updateDisplay() {
+            // 更新计数显示
+            document.getElementById('positive-count').textContent = positiveCount;
+            document.getElementById('negative-count').textContent = negativeCount;
+            
+            // 计算比例
+            let ratio = '';
+            let posPercent = 0;
+            let negPercent = 0;
+            let feedbackText = '';
+            let feedbackClass = '';
+            
+            if (positiveCount === 0 && negativeCount === 0) {
+                ratio = '-- : --';
+                posPercent = 50;
+                negPercent = 50;
+                feedbackText = '开始记录今天与孩子的互动吧！每一次有意识的正向互动，都在重塑孩子的大脑。';
+                feedbackClass = 'feedback-good';
+            } else if (negativeCount === 0) {
+                ratio = positiveCount + ' : 0';
+                posPercent = 100;
+                negPercent = 0;
+                feedbackText = '🎉 太棒了！今天全是正向互动！孩子的大脑正在被爱和肯定滋养。继续保持！';
+                feedbackClass = 'feedback-excellent';
+            } else {
+                const actualRatio = (positiveCount / negativeCount).toFixed(1);
+                ratio = actualRatio + ' : 1';
+                const total = positiveCount + negativeCount;
+                posPercent = Math.round((positiveCount / total) * 100);
+                negPercent = Math.round((negativeCount / total) * 100);
+                
+                if (actualRatio >= 5) {
+                    feedbackText = `🌟 优秀！比例达到 ${actualRatio}:1，超过科学建议的 5:1 黄金比例！孩子正在健康的情绪环境中成长，亲子关系稳固。`;
+                    feedbackClass = 'feedback-excellent';
+                } else if (actualRatio >= 3) {
+                    const need = Math.ceil(negativeCount * 5 - positiveCount);
+                    feedbackText = `👍 不错！比例 ${actualRatio}:1，接近目标了。再增加 ${need} 次正向互动就能达到 5:1 黄金比例。加油！`;
+                    feedbackClass = 'feedback-good';
+                } else if (actualRatio >= 1) {
+                    feedbackText = `⚠️ 需要改善。比例 ${actualRatio}:1 低于建议标准。负面互动对孩子的影响是正面的5倍！建议：暂停批评，专注称赞孩子的好行为。`;
+                    feedbackClass = 'feedback-warning';
+                } else {
+                    feedbackText = '🚨 警示！负向互动多于正向。这会严重影响孩子的自尊和亲子关系。建议：今天剩余时间只说正向的话，明天重新开始。';
+                    feedbackClass = 'feedback-warning';
+                }
+            }
+            
+            document.getElementById('ratio-display').textContent = ratio;
+            document.getElementById('positive-percent').textContent = posPercent + '%';
+            document.getElementById('negative-percent').textContent = negPercent + '%';
+            document.getElementById('ratio-bar-positive').style.width = posPercent + '%';
+            document.getElementById('ratio-bar-negative').style.width = negPercent + '%';
+            
+            const feedbackEl = document.getElementById('feedback');
+            feedbackEl.textContent = feedbackText;
+            feedbackEl.className = 'feedback ' + feedbackClass;
+        }
+        
+        function saveData() {
+            const currentDate = document.getElementById('date-input').value;
+            const existingIndex = history.findIndex(item => item.date === currentDate);
+            
+            const record = {
+                date: currentDate,
+                positive: positiveCount,
+                negative: negativeCount,
+                ratio: negativeCount === 0 ? positiveCount : (positiveCount / negativeCount).toFixed(1)
+            };
+            
+            if (existingIndex >= 0) {
+                history[existingIndex] = record;
+            } else {
+                history.push(record);
+            }
+            
+            // 排序并保留所有记录
+            history.sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            localStorage.setItem('interactionHistory-zh-CN', JSON.stringify(history));
+            displayHistory();
+        }
+        
+        function loadTodayData() {
+            const currentDate = document.getElementById('date-input').value;
+            const todayRecord = history.find(item => item.date === currentDate);
+            
+            if (todayRecord) {
+                positiveCount = todayRecord.positive;
+                negativeCount = todayRecord.negative;
+            } else {
+                positiveCount = 0;
+                negativeCount = 0;
+            }
+        }
+        
+        function displayHistory() {
+            const historyList = document.getElementById('history-list');
+            
+            if (history.length === 0) {
+                historyList.innerHTML = '<li style="text-align: center; color: #999; padding: 20px;">尚无记录，开始今天的追踪吧！</li>';
+                return;
+            }
+            
+            const weekdayNames = ['日','一','二','三','四','五','六'];
+            
+            historyList.innerHTML = history.map(item => {
+                const date = new Date(item.date);
+                const dateStr = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()} (${weekdayNames[date.getDay()]})`;
+                
+                const ratioColor = item.ratio >= 5 ? '#27ae60' : item.ratio >= 3 ? '#f39c12' : '#e74c3c';
+                
+                return `
+                    <li class="history-item">
+                        <span class="history-date">${dateStr}</span>
+                        <span>正向: ${item.positive} | 负向: ${item.negative}</span>
+                        <div>
+                            <span class="history-ratio" style="color: ${ratioColor}">
+                                ${item.negative === 0 ? item.positive + ':0' : item.ratio + ':1'}
+                            </span>
+                            <button class="delete-btn" onclick="deleteRecord('${item.date}')">删除</button>
+                        </div>
+                    </li>
+                `;
+            }).join('');
+        }
+        
+        function deleteRecord(date) {
+            showConfirmDialog('确定要删除此记录吗？ ' + date, function() {
+                history = history.filter(item => item.date !== date);
+                localStorage.setItem('interactionHistory-zh-CN', JSON.stringify(history));
+                displayHistory();
+                
+                if (document.getElementById('date-input').value === date) {
+                    loadTodayData();
+                    updateDisplay();
+                }
+            });
+        }
+        
+        // 导出 PDF (英文报告)
+        function exportPDF() {
+            if (history.length === 0) {
+                showAlert('没有可导出的记录！');
+                return;
+            }
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // 计算统计数据
+            const totalPositive = history.reduce((sum, item) => sum + item.positive, 0);
+            const totalNegative = history.reduce((sum, item) => sum + item.negative, 0);
+            const avgRatio = totalNegative === 0 ? 
+                (totalPositive > 0 ? totalPositive + ':0' : '0:0') : 
+                (totalPositive / totalNegative).toFixed(1) + ':1';
+            
+            // 英文标题
+            doc.setFontSize(24);
+            doc.setTextColor(102, 126, 234);
+            doc.text('Parent-Child Interaction Report', 105, 25, { align: 'center' });
+            
+            doc.setFontSize(12);
+            doc.setTextColor(100);
+            doc.text('Positive & Negative Interaction Tracking', 105, 33, { align: 'center' });
+            
+            doc.setFontSize(10);
+            const exportDate = new Date().toLocaleDateString('en-US');
+            doc.text('Export Date: ' + exportDate, 105, 42, { align: 'center' });
+            
+            doc.setDrawColor(102, 126, 234);
+            doc.setLineWidth(0.5);
+            doc.line(20, 48, 190, 48);
+            
+            doc.setFontSize(16);
+            doc.setTextColor(0);
+            doc.setFont(undefined, 'bold');
+            doc.text('Summary Statistics', 20, 58);
+            
+            doc.setFontSize(11);
+            doc.setFont(undefined, 'normal');
+            doc.text('Total Record Days: ' + history.length, 25, 68);
+            doc.text('Total Positive Interactions: ' + totalPositive, 25, 76);
+            doc.text('Total Negative Interactions: ' + totalNegative, 25, 84);
+            doc.text('Average Ratio: ' + avgRatio, 25, 92);
+            
+            doc.setFontSize(10);
+            doc.setTextColor(100);
+            doc.text('Target: 5:1 (5 positive interactions for every 1 negative)', 25, 100);
+            
+            const tableHeaders = ['Date', 'Positive', 'Negative', 'Ratio', 'Status'];
+            const statusLabels = ['Excellent', 'Good', 'Fair', 'Need Improvement'];
+            
+            const tableData = history.map(item => {
+                const date = new Date(item.date);
+                const dateStr = date.toLocaleDateString('en-US');
+                const ratioStr = item.negative === 0 ? `${item.positive}:0` : `${item.ratio}:1`;
+                
+                let status = '';
+                const ratioNum = item.negative === 0 ? item.positive : parseFloat(item.ratio);
+                if (ratioNum >= 5) status = statusLabels[0];
+                else if (ratioNum >= 3) status = statusLabels[1];
+                else if (ratioNum >= 1) status = statusLabels[2];
+                else status = statusLabels[3];
+                
+                return [dateStr, item.positive, item.negative, ratioStr, status];
+            });
+            
+            doc.autoTable({
+                startY: 110,
+                head: [tableHeaders],
+                body: tableData,
+                theme: 'grid',
+                headStyles: {
+                    fillColor: [102, 126, 234],
+                    fontSize: 11,
+                    fontStyle: 'bold',
+                    halign: 'center'
+                },
+                bodyStyles: {
+                    fontSize: 10,
+                    halign: 'center'
+                },
+                columnStyles: {
+                    0: { cellWidth: 40 },
+                    1: { cellWidth: 30 },
+                    2: { cellWidth: 30 },
+                    3: { cellWidth: 30 },
+                    4: { cellWidth: 45, fontStyle: 'bold' }
+                },
+                didParseCell: function(data) {
+                    if (data.section === 'body' && data.column.index === 4) {
+                        const status = data.cell.raw;
+                        if (status === statusLabels[0]) {
+                            data.cell.styles.textColor = [39, 174, 96];
+                        } else if (status === statusLabels[1]) {
+                            data.cell.styles.textColor = [243, 156, 18];
+                        } else if (status === statusLabels[2]) {
+                            data.cell.styles.textColor = [230, 126, 34];
+                        } else {
+                            data.cell.styles.textColor = [231, 76, 60];
+                        }
+                    }
+                }
+            });
+            
+            const finalY = doc.lastAutoTable.finalY || 110;
+            if (finalY < 250) {
+                doc.setFontSize(9);
+                doc.setTextColor(100);
+                doc.text('Note: Research shows that 5 positive interactions are needed to offset 1 negative interaction.', 20, finalY + 15, { maxWidth: 170 });
+                doc.text('Maintaining a high positive-to-negative ratio promotes healthy child development.', 20, finalY + 23, { maxWidth: 170 });
+            }
+            
+            const pageCount = doc.internal.getNumberOfPages();
+            for (let i = 1; i <= pageCount; i++) {
+                doc.setPage(i);
+                doc.setFontSize(8);
+                doc.setTextColor(150);
+                doc.text(`Page ${i} of ${pageCount}`, 105, 285, { align: 'center' });
+            }
+            
+            doc.save('Parent-Child_Interaction_Report_' + new Date().toISOString().split('T')[0] + '.pdf');
+        }
+        
+        // 获取周次的日期范围
+        function getWeekDates(weekType) {
+            const today = new Date();
+            const currentDay = today.getDay();
+            const diff = currentDay === 0 ? 6 : currentDay - 1;
+            
+            let weekOffset = 0;
+            if (weekType === 'last') weekOffset = 7;
+            else if (weekType === 'last2') weekOffset = 14;
+            else if (weekType === 'last3') weekOffset = 21;
+
+            const monday = new Date(today);
+            monday.setDate(today.getDate() - diff - weekOffset);
+            
+            const dates = [];
+            for (let i = 0; i < 7; i++) {
+                const date = new Date(monday);
+                date.setDate(monday.getDate() + i);
+                dates.push(date.toISOString().split('T')[0]);
+            }
+            
+            return dates;
+        }
+        
+        // 载入周报告
+        function loadWeekReport() {
+            const weekType = document.getElementById('weekSelect').value;
+            const weekDates = getWeekDates(weekType);
+            
+            let totalPositive = 0;
+            let totalNegative = 0;
+            let recordedDays = 0;
+            let bestRatio = 0;
+            let bestDay = '--';
+            const dailyRatios = [];
+            const dailyPositive = [];
+            const dailyNegative = [];
+
+            weekDates.forEach(date => {
+                const record = history.find(item => item.date === date);
+                if (record) {
+                    totalPositive += record.positive;
+                    totalNegative += record.negative;
+                    recordedDays++;
+                    
+                    const ratio = record.negative === 0 ? record.positive : parseFloat(record.ratio);
+                    dailyRatios.push(ratio);
+                    dailyPositive.push(record.positive);
+                    dailyNegative.push(record.negative);
+                    
+                    if (ratio > bestRatio) {
+                        bestRatio = ratio;
+                        const d = new Date(date);
+                        bestDay = `${d.getMonth()+1}/${d.getDate()}`;
+                    }
+                } else {
+                    dailyRatios.push(0);
+                    dailyPositive.push(0);
+                    dailyNegative.push(0);
+                }
+            });
+
+            const avgRatio = totalNegative === 0 ? 
+                (totalPositive > 0 ? totalPositive + ':0' : '0:0') : 
+                (totalPositive / totalNegative).toFixed(1) + ':1';
+
+            document.getElementById('weekPositive').textContent = totalPositive;
+            document.getElementById('weekNegative').textContent = totalNegative;
+            document.getElementById('weekAvgRatio').textContent = avgRatio;
+            document.getElementById('weekBestDay').textContent = bestDay;
+            document.getElementById('weekRecordDays').textContent = recordedDays;
+
+            // 绘制比例趋势图
+            const lineChart = document.getElementById('weekLineChart');
+            lineChart.innerHTML = '';
+            const maxRatio = Math.max(...dailyRatios, 5);
+            const dayNames = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
+
+            dailyRatios.forEach((ratio, index) => {
+                const bar = document.createElement('div');
+                bar.className = 'line-bar';
+                const height = (ratio / maxRatio) * 100;
+                bar.style.height = height + '%';
+                bar.style.background = ratio >= 5 ? 
+                    'linear-gradient(180deg, #2ecc71 0%, #27ae60 100%)' : 
+                    ratio >= 3 ? 
+                    'linear-gradient(180deg, #f39c12 0%, #e67e22 100%)' : 
+                    'linear-gradient(180deg, #e74c3c 0%, #c0392b 100%)';
+                
+                const label = document.createElement('div');
+                label.className = 'line-bar-label';
+                label.textContent = dayNames[index];
+                bar.appendChild(label);
+
+                if (ratio > 0) {
+                    const value = document.createElement('div');
+                    value.className = 'line-bar-value';
+                    value.textContent = ratio.toFixed(1);
+                    bar.appendChild(value);
+                }
+
+                lineChart.appendChild(bar);
+            });
+
+            // 绘制正负向对比图
+            const barChart = document.getElementById('weekBarChart');
+            barChart.innerHTML = '';
+            const maxCount = Math.max(...dailyPositive, ...dailyNegative, 1);
+
+            dailyPositive.forEach((count, index) => {
+                const barGroup = document.createElement('div');
+                barGroup.style.flex = '1';
+                barGroup.style.display = 'flex';
+                barGroup.style.flexDirection = 'column';
+                barGroup.style.alignItems = 'center';
+                barGroup.style.gap = '5px';
+                barGroup.style.position = 'relative';
+                
+                const posBar = document.createElement('div');
+                posBar.style.width = '100%';
+                posBar.style.height = ((count / maxCount) * 100) + '%';
+                posBar.style.background = 'linear-gradient(180deg, #2ecc71 0%, #27ae60 100%)';
+                posBar.style.borderRadius = '8px 8px 0 0';
+                posBar.style.minHeight = count > 0 ? '10px' : '0';
+                
+                const negBar = document.createElement('div');
+                negBar.style.width = '100%';
+                negBar.style.height = ((dailyNegative[index] / maxCount) * 100) + '%';
+                negBar.style.background = 'linear-gradient(180deg, #e74c3c 0%, #c0392b 100%)';
+                negBar.style.borderRadius = '8px 8px 0 0';
+                negBar.style.minHeight = dailyNegative[index] > 0 ? '10px' : '0';
+                
+                const label = document.createElement('div');
+                label.style.fontSize = '0.85em';
+                label.style.color = '#666';
+                label.style.marginTop = '5px';
+                label.textContent = dayNames[index];
+                
+                barGroup.appendChild(posBar);
+                barGroup.appendChild(negBar);
+                barGroup.appendChild(label);
+                barChart.appendChild(barGroup);
+            });
+        }
+        
+        // 日期改变时载入该日期的资料
+        document.getElementById('date-input').addEventListener('change', function() {
+            loadTodayData();
+            updateDisplay();
+        });
+        
+        // 键盘快捷键
+        document.addEventListener('keydown', function(e) {
+            if (e.key === '+' || e.key === '=') {
+                addPositive();
+            } else if (e.key === '-' || e.key === '_') {
+                addNegative();
+            }
+        });
+    </script>
+</body>
+</html>

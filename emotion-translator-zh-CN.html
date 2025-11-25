@@ -1,0 +1,1960 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>亲子情绪翻译机｜Good4Parents ❤️ Good4Children</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    .header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 30px 40px;
+      text-align: center;
+    }
+    .header h1 {
+      font-size: 2.2em;
+      margin-bottom: 8px;
+    }
+    .header .subtitle {
+      font-size: 1.1em;
+      opacity: 0.98;
+      line-height: 1.7;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    .header .subtitle span {
+      display: block;
+      font-size: 0.9em;
+      opacity: 0.9;
+      margin-top: 6px;
+    }
+    
+    .tab-navigation {
+      display: flex;
+      background: #f8f9fa;
+      border-bottom: 2px solid #e9ecef;
+    }
+    .tab-button {
+      flex: 1;
+      padding: 16px;
+      background: none;
+      border: none;
+      font-size: 1.05em;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+      color: #666;
+      font-family: inherit;
+    }
+    .tab-button.active {
+      background: white;
+      color: #667eea;
+      border-bottom: 3px solid #667eea;
+    }
+    .tab-button:hover {
+      background: #e9ecef;
+    }
+    .tab-content {
+      display: none;
+      padding: 30px;
+    }
+    .tab-content.active {
+      display: block;
+    }
+
+    /* 步骤指示器 */
+    .step-indicator {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 20px;
+      padding: 18px;
+      background: #f8f9ff;
+      border-radius: 12px;
+      flex-wrap: wrap;
+    }
+    .step-dot {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #e0e0e0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: #999;
+      font-size: 1.1em;
+    }
+    .step-dot.active {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      transform: scale(1.2);
+    }
+    .step-arrow {
+      color: #ccc;
+      font-size: 1.2em;
+    }
+
+    /* 年龄选择器 */
+    .age-selector {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 20px 0;
+    }
+    .age-button {
+      padding: 10px 20px;
+      border: 2px solid #e0e0e0;
+      border-radius: 25px;
+      background: white;
+      cursor: pointer;
+      font-size: 0.95em;
+      font-weight: bold;
+      transition: all 0.3s;
+      font-family: inherit;
+    }
+    .age-button:hover {
+      background: #f0f4ff;
+    }
+    .age-button.active {
+      background: #667eea;
+      color: white;
+      border-color: #667eea;
+    }
+
+    /* 情境大卡片 */
+    .scenario-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+    .scenario-card {
+      background: white;
+      border: 3px solid #e0e0e0;
+      border-radius: 15px;
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      user-select: none;
+    }
+    .scenario-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
+    .scenario-card.active {
+      border-color: #667eea;
+      background: linear-gradient(135deg, #f0f4ff 0%, #e8ecff 100%);
+      box-shadow: 0 8px 20px rgba(102,126,234,0.3);
+    }
+    .scenario-icon {
+      font-size: 3.5em;
+      margin-bottom: 10px;
+    }
+    .scenario-name {
+      font-size: 1.05em;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 4px;
+    }
+    .scenario-desc {
+      font-size: 0.85em;
+      color: #777;
+      line-height: 1.4;
+    }
+
+    /* 情绪卡片 */
+    .emotion-result {
+      background: #fff9e6;
+      border-radius: 15px;
+      padding: 25px;
+      margin: 20px 0;
+      border-left: 5px solid #ffc107;
+    }
+    .emotion-title {
+      font-size: 1.3em;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .emotion-items {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .emotion-badge {
+      background: white;
+      padding: 10px 16px;
+      border-radius: 25px;
+      font-size: 1.05em;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .emotion-emoji {
+      font-size: 1.3em;
+    }
+    .emotion-phrase {
+      font-size: 0.85em;
+      color: #777;
+      margin-top: 4px;
+      width: 100%;
+    }
+
+    /* 需要卡片 */
+    .need-result {
+      background: #e8f5e9;
+      border-radius: 15px;
+      padding: 25px;
+      margin: 20px 0;
+      border-left: 5px solid #4caf50;
+    }
+    .need-title {
+      font-size: 1.3em;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .need-items {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .need-badge {
+      background: white;
+      padding: 10px 16px;
+      border-radius: 25px;
+      font-size: 1.05em;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .need-phrase {
+      font-size: 0.85em;
+      color: #777;
+      margin-top: 4px;
+      width: 100%;
+    }
+
+    /* 回应建议卡片 */
+    .response-result {
+      background: #e3f2fd;
+      border-radius: 15px;
+      padding: 25px;
+      margin: 20px 0;
+      border-left: 5px solid #2196f3;
+    }
+    .response-title {
+      font-size: 1.3em;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .response-item {
+      background: white;
+      padding: 14px 14px 10px 14px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      font-size: 0.98em;
+      color: #444;
+      position: relative;
+    }
+    .response-number {
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      background: #2196f3;
+      color: white;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 24px;
+      margin-right: 8px;
+      font-size: 0.9em;
+      font-weight: bold;
+    }
+    .response-main {
+      font-weight: 600;
+      margin-bottom: 4px;
+      display: inline-block;
+    }
+    .response-say {
+      font-size: 0.93em;
+      color: #555;
+      margin-left: 30px;
+    }
+    .response-say strong {
+      font-weight: 600;
+    }
+    .response-select {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.8em;
+      color: #666;
+      cursor: pointer;
+    }
+    .response-select input {
+      cursor: pointer;
+    }
+
+    /* 我的反应选择 */
+    .reaction-options {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 12px;
+      margin: 20px 0;
+    }
+    .reaction-card {
+      background: #f8f9fa;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      padding: 12px 15px;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .reaction-card:hover {
+      background: #e9ecef;
+    }
+    .reaction-card.selected {
+      background: #e8f5e9;
+      border-color: #4caf50;
+    }
+    .reaction-checkbox {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+      margin-top: 2px;
+    }
+    .reaction-text {
+      font-size: 0.95em;
+      color: #333;
+      flex: 1;
+      cursor: pointer;
+      line-height: 1.5;
+    }
+    .reaction-label-main {
+      font-weight: 600;
+    }
+    .reaction-label-sub {
+      font-size: 0.86em;
+      color: #666;
+      margin-top: 2px;
+      display: block;
+    }
+
+    /* 鼓励信息 */
+    .encouragement-box {
+      background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+      border-radius: 15px;
+      padding: 20px;
+      margin: 20px 0;
+      border-left: 5px solid #ff9800;
+    }
+    .encouragement-title {
+      font-size: 1.2em;
+      font-weight: bold;
+      color: #e65100;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .encouragement-content {
+      font-size: 1em;
+      line-height: 1.7;
+      color: #555;
+    }
+    .encouragement-highlight {
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 80px;
+      border-radius: 10px;
+      border: 2px solid #dfe4ea;
+      padding: 12px;
+      font-size: 1em;
+      font-family: inherit;
+      resize: vertical;
+      outline: none;
+    }
+    textarea:focus {
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
+    }
+
+    .btn {
+      padding: 12px 24px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      font-size: 1.05em;
+      font-weight: bold;
+      font-family: inherit;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(102,126,234,0.35);
+    }
+    .btn-secondary {
+      background: white;
+      color: #667eea;
+      border: 2px solid #667eea;
+    }
+    .btn-secondary:hover {
+      background: #667eea;
+      color: white;
+    }
+    .btn-danger {
+      background: #fff5f5;
+      color: #e53935;
+      border: 1px solid #ffcdd2;
+    }
+    .btn-danger:hover {
+      background: #ffcdd2;
+      color: #b71c1c;
+    }
+    .btn-large {
+      padding: 16px 32px;
+      font-size: 1.2em;
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      margin-top: 25px;
+    }
+
+    .section-card {
+      background: #f8f9fa;
+      border-radius: 15px;
+      padding: 25px;
+      margin-bottom: 20px;
+    }
+    
+    .section-title {
+      font-size: 1.4em;
+      font-weight: bold;
+      color: #2c3e50;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-subtitle {
+      font-size: 0.9em;
+      color: #777;
+      margin-bottom: 10px;
+      font-style: italic;
+    }
+
+    .hint-text {
+      font-size: 0.9em;
+      color: #666;
+      margin-top: 8px;
+      font-style: italic;
+    }
+
+    .note-box {
+      background: white;
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      padding: 20px;
+      margin-top: 15px;
+      min-height: 150px;
+      white-space: pre-wrap;
+      line-height: 1.8;
+      font-size: 1em;
+      color: #333;
+    }
+    .note-placeholder {
+      color: #999;
+      font-style: italic;
+    }
+    .copy-hint {
+      margin-top: 8px;
+      font-size: 0.85em;
+      color: #2e7d32;
+      min-height: 1.2em;
+    }
+
+    /* 每周回顾 */
+    .history-summary {
+      background: #f0f4ff;
+      border-radius: 12px;
+      padding: 15px 18px;
+      margin-bottom: 20px;
+      border-left: 4px solid #667eea;
+      font-size: 0.96em;
+      color: #34495e;
+      line-height: 1.6;
+    }
+    .history-item {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 15px;
+      border-left: 5px solid #667eea;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .history-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .history-date {
+      font-weight: bold;
+      color: #667eea;
+      font-size: 1.05em;
+    }
+    .history-scenario {
+      background: #f0f4ff;
+      padding: 5px 12px;
+      border-radius: 15px;
+      font-size: 0.9em;
+      color: #667eea;
+    }
+    .history-content {
+      font-size: 0.95em;
+      line-height: 1.6;
+      color: #555;
+    }
+    .empty-history {
+      text-align: center;
+      padding: 40px;
+      color: #999;
+    }
+    .empty-history-icon {
+      font-size: 4em;
+      margin-bottom: 15px;
+    }
+
+    /* 参考文献 */
+    .reference-section {
+      background: #f8f9fa;
+      border-radius: 15px;
+      padding: 25px;
+      margin-top: 30px;
+      border-left: 5px solid #607d8b;
+    }
+    .reference-title {
+      font-size: 1.2em;
+      font-weight: bold;
+      color: #37474f;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .reference-list {
+      font-size: 0.9em;
+      line-height: 1.8;
+      color: #555;
+    }
+    .reference-item {
+      margin-bottom: 12px;
+      padding-left: 20px;
+      text-indent: -20px;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      .header h1 {
+        font-size: 1.6em;
+      }
+      .header .subtitle {
+        font-size: 0.98em;
+      }
+      .scenario-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .step-indicator {
+        padding: 15px 10px;
+      }
+      .step-dot {
+        width: 35px;
+        height: 35px;
+        font-size: 1em;
+      }
+      .tab-button {
+        font-size: 0.9em;
+        padding: 12px 8px;
+      }
+      .reaction-options {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>🎯 亲子情绪翻译机</h1>
+    <p class="subtitle">
+      花 3 分钟，帮你把「今天特别崩溃的一幕」翻成：
+      <br>孩子心里在想什么 + 我刚刚其实怎么了 + 下次可以试的一两句话。
+      <span>不需要完美，只要愿意看见自己和孩子，你已经在进步。</span>
+    </p>
+  </div>
+
+  <div class="tab-navigation">
+    <button class="tab-button active" onclick="switchTab('translate')">🎯 翻译今天的情况</button>
+    <button class="tab-button" onclick="switchTab('note')">📝 生成今天的小记录</button>
+    <button class="tab-button" onclick="switchTab('history')">📊 每周回顾</button>
+  </div>
+
+  <!-- Tab 1: 情绪翻译 -->
+  <div id="translateTab" class="tab-content active">
+    <!-- 步骤指示器 -->
+    <div class="step-indicator">
+      <div class="step-dot active" id="stepDot1">1</div>
+      <div class="step-arrow">→</div>
+      <div class="step-dot" id="stepDot2">2</div>
+      <div class="step-arrow">→</div>
+      <div class="step-dot" id="stepDot3">3</div>
+    </div>
+
+    <!-- 步骤1: 选情境 -->
+    <div id="step1" class="section-card">
+      <div class="section-title">
+        <span>1️⃣</span> 孩子大概多大？（先随便选一个范围就行）
+      </div>
+      <p class="section-subtitle">
+        不用抓得很准，只要选一个「大概的年龄段」，翻译会更贴近你家的情况。
+      </p>
+      
+      <div class="age-selector">
+        <button class="age-button active" onclick="selectAge('toddler', this)">1-3岁 幼儿</button>
+        <button class="age-button" onclick="selectAge('preschool', this)">3-6岁 学龄前</button>
+        <button class="age-button" onclick="selectAge('school', this)">6-12岁 小学阶段</button>
+      </div>
+
+      <div class="section-title" style="margin-top: 30px;">
+        今天大概是哪一种情况？（先选一个你最有感觉的就好）
+      </div>
+      
+      <div class="scenario-grid" id="scenarioGrid">
+        <div class="scenario-card" onclick="selectScenario('separation', this)">
+          <div class="scenario-icon">🏫</div>
+          <div class="scenario-name">上学不想去</div>
+          <div class="scenario-desc">出门前死死黏着、不停哭闹、不愿意分开</div>
+        </div>
+        <div class="scenario-card" onclick="selectScenario('public_tantrum', this)">
+          <div class="scenario-icon">🛒</div>
+          <div class="scenario-name">外出吵闹</div>
+          <div class="scenario-desc">在超市、公园、公共场合大哭大叫</div>
+        </div>
+        <div class="scenario-card" onclick="selectScenario('sibling_conflict', this)">
+          <div class="scenario-icon">👧👦</div>
+          <div class="scenario-name">兄弟姐妹吵架</div>
+          <div class="scenario-desc">抢玩具、互相告状、觉得不公平</div>
+        </div>
+        <div class="scenario-card" onclick="selectScenario('bedtime', this)">
+          <div class="scenario-icon">🌙</div>
+          <div class="scenario-name">不肯睡觉</div>
+          <div class="scenario-desc">说还要玩、喊自己不困、一直拖到很晚</div>
+        </div>
+        <div class="scenario-card" onclick="selectScenario('transition', this)">
+          <div class="scenario-icon">⏱️</div>
+          <div class="scenario-name">不肯收玩具</div>
+          <div class="scenario-desc">叫他收东西时，各种拖、各种拒绝</div>
+        </div>
+        <div class="scenario-card" onclick="selectScenario('mealtime', this)">
+          <div class="scenario-icon">🍽️</div>
+          <div class="scenario-name">吃饭磨蹭</div>
+          <div class="scenario-desc">一边玩一边吃、吃得超慢、说自己不饿</div>
+        </div>
+        <!-- 新增：其他 / 今天只是很崩溃 -->
+        <div class="scenario-card" onclick="selectScenario('other', this)">
+          <div class="scenario-icon">😵</div>
+          <div class="scenario-name">说不清，总之今天很崩溃</div>
+          <div class="scenario-desc">情况不在上面，或者一次很多事叠在一起</div>
+        </div>
+      </div>
+
+      <div style="margin-top: 25px;">
+        <label style="font-weight: bold; color: #333; margin-bottom: 8px; display: block;">
+          想简单写一下发生了什么吗？（选填）
+        </label>
+        <textarea id="scenarioText" placeholder="比如：今天一说要出门他就开始大哭，后来我也很生气，吼了他一顿（不写也可以）"></textarea>
+        <div class="hint-text">
+          不一定要打字。如果愿意写一写，后面的翻译会更贴近你家的情况。
+        </div>
+      </div>
+
+      <div class="button-row">
+        <button class="btn btn-primary btn-large" onclick="showStep2()">
+          看看孩子心里在想什么 →
+        </button>
+      </div>
+    </div>
+
+    <!-- 步骤2: 情绪翻译结果 -->
+    <div id="step2" class="section-card hidden">
+      <div class="section-title">
+        <span>2️⃣</span> 帮你翻译：孩子心里可能是这样
+      </div>
+      <p class="section-subtitle">
+        下面只是「可能」，不代表一定全对。你可以挑几句最有感觉的，当作跟孩子开口的起点。
+      </p>
+
+      <!-- 孩子的感受 -->
+      <div class="emotion-result">
+        <div class="emotion-title">
+          <span>💭</span> 孩子可能的感受（你可以把这些话说给 TA 听）
+        </div>
+        <div class="emotion-items" id="emotionItems"></div>
+      </div>
+
+      <!-- 孩子的需要 -->
+      <div class="need-result">
+        <div class="need-title">
+          <span>💚</span> 孩子真正需要的（不一定是「听话」，更可能是这些）
+        </div>
+        <div class="need-items" id="needItems"></div>
+      </div>
+
+      <!-- 我可以怎么做 -->
+      <div class="response-result">
+        <div class="response-title">
+          <span>💡</span> 下次我可以练习的一两句话（可以勾选想试的）
+        </div>
+        <div id="responseItems"></div>
+      </div>
+
+      <div class="button-row">
+        <button class="btn btn-secondary" onclick="showStep1()">← 返回重选</button>
+        <button class="btn btn-primary btn-large" onclick="showStep3()">记录一下我的反应 →</button>
+      </div>
+    </div>
+
+    <!-- 步骤3: 记录我的反应 -->
+    <div id="step3" class="section-card hidden">
+      <div class="section-title">
+        <span>3️⃣</span> 我刚刚是怎么反应的？（可多选）
+      </div>
+      <p class="section-subtitle">
+        这里没有对错，也不是打分数。只是帮你看清楚：我平时习惯怎么回应孩子。
+      </p>
+
+      <div class="reaction-options" id="reactionOptions">
+        <div class="reaction-card" onclick="toggleReaction('raiseVoice', this, event)">
+          <input type="checkbox" class="reaction-checkbox" id="r_raiseVoice">
+          <label class="reaction-text" for="r_raiseVoice">
+            <span class="reaction-label-main">📢 当时我情绪有点上头</span>
+            <span class="reaction-label-sub">比如：声音变大、吼叫、说话口气比较冲</span>
+          </label>
+        </div>
+        <div class="reaction-card" onclick="toggleReaction('threaten', this, event)">
+          <input type="checkbox" class="reaction-checkbox" id="r_threaten">
+          <label class="reaction-text" for="r_threaten">
+            <span class="reaction-label-main">⚠️ 我说了「你再…我就…」之类的话</span>
+            <span class="reaction-label-sub">比如：「你再哭我就不带你去了」「不听话就把玩具都收走」</span>
+          </label>
+        </div>
+        <div class="reaction-card" onclick="toggleReaction('giveUp', this, event)">
+          <input type="checkbox" class="reaction-checkbox" id="r_giveUp">
+          <label class="reaction-text" for="r_giveUp">
+            <span class="reaction-label-main">🤷 后面我先妥协 / 放弃坚持</span>
+            <span class="reaction-label-sub">比如：算了随便他、先答应孩子、以后再说</span>
+          </label>
+        </div>
+        <div class="reaction-card" onclick="toggleReaction('cold', this, event)">
+          <input type="checkbox" class="reaction-checkbox" id="r_cold">
+          <label class="reaction-text" for="r_cold">
+            <span class="reaction-label-main">🧊 我先选择不理他一会儿</span>
+            <span class="reaction-label-sub">比如：冷处理、故意不回应、先让彼此冷静一下</span>
+          </label>
+        </div>
+        <div class="reaction-card" onclick="toggleReaction('compare', this, event)">
+          <input type="checkbox" class="reaction-checkbox" id="r_compare">
+          <label class="reaction-text" for="r_compare">
+            <span class="reaction-label-main">👥 我拿 TA 和别人比较</span>
+            <span class="reaction-label-sub">比如：「你看看人家都可以」「弟弟都做得到」</span>
+          </label>
+        </div>
+        <div class="reaction-card" onclick="toggleReaction('label', this, event)">
+          <input type="checkbox" class="reaction-checkbox" id="r_label">
+          <label class="reaction-text" for="r_label">
+            <span class="reaction-label-main">🏷️ 我给 TA 贴了一些标签</span>
+            <span class="reaction-label-sub">比如：「你就是很懒」「你怎么老是这样」</span>
+          </label>
+        </div>
+        <div class="reaction-card" onclick="toggleReaction('empathy', this, event)">
+          <input type="checkbox" class="reaction-checkbox" id="r_empathy">
+          <label class="reaction-text" for="r_empathy">
+            <span class="reaction-label-main">💙 我有先说出 TA 的感受</span>
+            <span class="reaction-label-sub">比如：「你现在很生气对不对」「你其实很舍不得」</span>
+          </label>
+        </div>
+        <div class="reaction-card" onclick="toggleReaction('boundary', this, event)">
+          <input type="checkbox" class="reaction-checkbox" id="r_boundary">
+          <label class="reaction-text" for="r_boundary">
+            <span class="reaction-label-main">🎯 我有温和但坚定地说清界限</span>
+            <span class="reaction-label-sub">比如：「我知道你不想，可是我们还是得……」</span>
+          </label>
+        </div>
+        <div class="reaction-card" onclick="toggleReaction('repair', this, event)">
+          <input type="checkbox" class="reaction-checkbox" id="r_repair">
+          <label class="reaction-text" for="r_repair">
+            <span class="reaction-label-main">🤝 事后我有尝试修复关系</span>
+            <span class="reaction-label-sub">比如：有道歉、有抱抱、有好好聊一聊</span>
+          </label>
+        </div>
+        <!-- 真实但常见的状态 -->
+        <div class="reaction-card" onclick="toggleReaction('tiredBlank', this, event)">
+          <input type="checkbox" class="reaction-checkbox" id="r_tiredBlank">
+          <label class="reaction-text" for="r_tiredBlank">
+            <span class="reaction-label-main">😵 我自己也很累，脑子一片空白</span>
+            <span class="reaction-label-sub">当时只想赶紧结束这回合，已经没力气多想了</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="button-row">
+        <button class="btn btn-secondary" onclick="showStep2()">← 上一步</button>
+        <button class="btn btn-primary btn-large" onclick="goToNote()">完成 → 看今天记录</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab 2: 生成记录 -->
+  <div id="noteTab" class="tab-content">
+    <div class="section-card">
+      <div class="section-title">
+        <span>📝</span> 今天的养育小记录
+      </div>
+      
+      <p style="color: #666; margin-bottom: 15px;">
+        这是根据你刚刚的选择自动生成的。可以复制到微信、备忘录，或者发给另一半，一起当作「练习记录」。
+      </p>
+
+      <div class="note-box" id="noteBox">
+        <span class="note-placeholder">完成左边的 3 个步骤后，这里会自动生成一段简短记录。</span>
+      </div>
+
+      <!-- 鼓励信息区域 -->
+      <div id="encouragementSection"></div>
+
+      <div class="button-row">
+        <button class="btn btn-primary" onclick="regenerateNote()">🔄 重新生成记录</button>
+        <button class="btn btn-secondary" onclick="copyNote()">📋 复制记录</button>
+      </div>
+      <div id="copyHint" class="copy-hint"></div>
+    </div>
+
+    <div class="section-card" style="background: #e8f5e9; border-left: 5px solid #4caf50;">
+      <div class="section-title" style="color: #2e7d32;">
+        <span>💡</span> 小提醒
+      </div>
+      <ul style="padding-left: 25px; line-height: 1.8; color: #444; font-size: 0.96em;">
+        <li>不需要把每一件事都处理得完美，重点是你愿意停下来看看「刚刚到底发生了什么」。</li>
+        <li>一周回顾一次，你会发现：其实自己已经跟以前不太一样了。</li>
+        <li>也可以请另一半一起看这些记录，慢慢变成你们的「小默契笔记」。</li>
+      </ul>
+    </div>
+
+    <!-- 参考文献（APA 7th）-->
+    <div class="reference-section">
+      <div class="reference-title">
+        <span>📚</span> 这个小工具背后参考的心理学与养育研究
+      </div>
+      <div class="reference-list">
+        <div class="reference-item">
+          Cooper, G., Hoffman, K., Powell, B., &amp; Marvin, R. (2005). The Circle of Security intervention: Differential diagnosis and differential treatment. In L. J. Berlin, Y. Ziv, L. Amaya-Jackson, &amp; M. T. Greenberg (Eds.), <i>Enhancing early attachments: Theory, research, intervention, and policy</i> (pp. 127–151). Guilford Press.
+        </div>
+        <div class="reference-item">
+          Faber, A., &amp; Mazlish, E. (2012). <i>How to talk so kids will listen &amp; listen so kids will talk</i>. Scribner. (Original work published 1980)
+        </div>
+        <div class="reference-item">
+          Gottman, J. M., Katz, L. F., &amp; Hooven, C. (1997). <i>Meta-emotion: How families communicate emotionally</i>. Lawrence Erlbaum Associates.
+        </div>
+        <div class="reference-item">
+          Kennedy-Moore, E., &amp; Lowenthal, M. S. (2011). <i>Smart parenting for smart kids: Nurturing your child&#39;s true potential</i>. Jossey-Bass.
+        </div>
+        <div class="reference-item">
+          Neff, K. D., &amp; Faso, D. J. (2015). Self-compassion and well-being in parents of children with autism. <i>Mindfulness, 6</i>(4), 938–947. https://doi.org/10.1007/s12671-014-0322-0
+        </div>
+        <div class="reference-item">
+          Siegel, D. J., &amp; Bryson, T. P. (2011). <i>The whole-brain child: 12 revolutionary strategies to nurture your child&#39;s developing mind</i>. Delacorte Press.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab 3: 每周回顾 -->
+  <div id="historyTab" class="tab-content">
+    <div class="section-card">
+      <div class="section-title">
+        <span>📊</span> 过去 7 天的一点小观察
+      </div>
+
+      <div id="historySummary" class="history-summary hidden"></div>
+      
+      <div id="historyList">
+        <div class="empty-history">
+          <div class="empty-history-icon">📭</div>
+          <p>还没有记录，完成一次情绪翻译后就会出现在这里。</p>
+          <p style="font-size: 0.9em; color: #999; margin-top: 8px;">先从今天你最想记录的一件事开始就好。</p>
+        </div>
+      </div>
+
+      <div class="button-row" style="margin-top: 10%;">
+        <button class="btn btn-danger" onclick="clearAllRecords()">🧹 清空所有记录</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // === 数据库（按年龄调整的情绪翻译）===
+  const scenarioTemplates = {
+    separation: {
+      name: '上学不想去',
+      icon: '🏫',
+      ageVariants: {
+        toddler: {
+          emotions: [
+            { emoji: '😨', text: '担心爸爸妈妈会不见', keywords: ['哭', '抱', '不放手', '妈妈', '爸爸'], phrase: '「你是不是很怕妈妈一走，就再也看不到我了？」' },
+            { emoji: '😢', text: '搞不懂为什么要分开', keywords: ['为什么', '不要', '不想'], phrase: '「你搞不懂为什么一定要分开，心里很难受。」' },
+            { emoji: '😰', text: '周围人太陌生，很紧张', keywords: ['陌生', '不认识', '不熟悉'], phrase: '「这里有很多你不熟悉的人，会让你觉得有点怕。」' }
+          ],
+          needs: [
+            { emoji: '🛡️', text: '需要被抱紧、被安抚', keywords: ['抱', '哭', '黏'], phrase: '可以多抱一会儿，让他身体先感觉到安全。' },
+            { emoji: '💕', text: '需要反复确认你会回来', keywords: ['回来', '接', '会不会'], phrase: '一遍一遍跟他说：「妈妈一定会回来接你。」' },
+            { emoji: '🎯', text: '需要固定的「告别小仪式」', keywords: ['再见', '拜拜', '走'], phrase: '比如：每次出门前都来一个「抱抱 + 击掌 + 说再见」。' }
+          ],
+          responses: [
+            { main: '先用身体安抚，再说明你会回来接他。', say: '「妈妈先抱抱你一下，一会儿妈妈要去上班，下午太阳快下山的时候就会来接你。」' },
+            { main: '把时间变得「看得见」。', say: '「你看这个指针到了这里，妈妈就会出现在门口，你可以在心里帮我数。」' },
+            { main: '做一个固定的分离小仪式。', say: '「我们来击掌三下，然后说：妈妈一会儿就回来。击完掌妈妈就要出门啦。」' }
+          ]
+        },
+        preschool: {
+          emotions: [
+            { emoji: '😨', text: '担心爸妈会不会忘记来接', keywords: ['接', '回来', '忘记', '会不会'], phrase: '「你是不是在想：会不会没人来接我？」' },
+            { emoji: '😢', text: '舍不得离开家里的舒服感', keywords: ['不想', '在家', '离开'], phrase: '「你在家里很舒服，突然要出门，心里很舍不得。」' },
+            { emoji: '😰', text: '对分离感到紧张', keywords: ['紧张', '不想去', '害怕'], phrase: '「要跟爸爸妈妈分开的时候，你心里会紧紧的。」' }
+          ],
+          needs: [
+            { emoji: '🛡️', text: '需要清楚知道什么时候再见到你', keywords: ['什么时候', '多久', '几点'], phrase: '用「时间点 + 出现的地点」讲清楚。' },
+            { emoji: '💕', text: '需要带一件「妈妈的东西」去', keywords: ['带', '要', '东西'], phrase: '比如带你的手帕、照片或者一个小玩偶。' },
+            { emoji: '📅', text: '需要早上出门别太赶', keywords: ['赶', '来不及', '快点'], phrase: '留一点「有余地的相处时间」，不要全程都在赶。' }
+          ],
+          responses: [
+            { main: '先说出他的舍不得和紧张。', say: '「你现在很舍不得，又有点紧张，心里肯定不太舒服。」' },
+            { main: '给他一个可以带走的安全感。', say: '「你想带妈妈的手帕，还是这个小玩偶去学校？它们会陪你，直到我来接你。」' },
+            { main: '清楚约定接他的时间和方式。', say: '「等墙上的大钟指到 3 点，妈妈就会在门口等你，我们再来击一下掌当约定。」' }
+          ]
+        },
+        school: {
+          emotions: [
+            { emoji: '😟', text: '担心和同学相处', keywords: ['朋友', '同学', '不喜欢', '排挤'], phrase: '「是不是跟同学相处最近让你觉得很别扭？」' },
+            { emoji: '😔', text: '觉得学习压力很大', keywords: ['作业', '考试', '不会', '功课'], phrase: '「功课和考试好多，你是不是会觉得有点喘不过气？」' },
+            { emoji: '😤', text: '生气为什么一定要去学校', keywords: ['为什么', '不想去', '不要'], phrase: '「你可能会想：为什么每天都要去学校，好烦。」' }
+          ],
+          needs: [
+            { emoji: '👂', text: '需要有人听他讲「最近发生了什么」', keywords: ['发生', '老师说', '同学'], phrase: '有一段安全的时间，可以慢慢讲，不被打断。' },
+            { emoji: '🎯', text: '需要一起解决具体困难，而不是只听「你要坚强」', keywords: ['怎么办', '一直', '好难'], phrase: '可以一起想具体做法，而不是只有「你要加油」。' },
+            { emoji: '⚖️', text: '需要被理解「不是我不想努力」', keywords: ['很难', '不会', '努力'], phrase: '先听见他的辛苦，而不是只看结果。' }
+          ],
+          responses: [
+            { main: '先邀请他讲讲最近发生的事，而不是马上讲道理。', say: '「最近是不是有发生什么事，让你特别不想去学校？我想听听看。」' },
+            { main: '把「一起想办法」说出口。', say: '「如果同学一直这样对你，我们可以有哪些做法？一起来想三个试试看。」' },
+            { main: '肯定他的努力和压力感。', say: '「功课真的很多，也很难。你这段时间一直在撑着，我都看在眼里。」' }
+          ]
+        }
+      }
+    },
+    public_tantrum: {
+      name: '外出吵闹',
+      icon: '🛒',
+      ageVariants: {
+        toddler: {
+          emotions: [
+            { emoji: '😠', text: '看到想要的就必须马上得到', keywords: ['要', '拿', '买', '给我'], phrase: '「你看到这个东西，就超想现在马上拿到手。」' },
+            { emoji: '😤', text: '听不懂为什么不行', keywords: ['为什么', '不行', '不可以'], phrase: '「你会想：为什么不可以？我不懂，只觉得很生气。」' },
+            { emoji: '😫', text: '又累又饿、环境太吵', keywords: ['累', '饿', '很多人', '吵'], phrase: '「这里人很多、声音也很大，再加上你有点累，所以情绪一下就爆了。」' }
+          ],
+          needs: [
+            { emoji: '🍼', text: '可能真的是饿了 / 困了 / 口渴', keywords: ['饿', '渴', '累', '想睡'], phrase: '先照顾身体，比要求「乖一点」更重要。' },
+            { emoji: '🎯', text: '需要又短又清楚的规则', keywords: ['可以', '不行', '规则'], phrase: '用一两句说清楚，讲太多反而更乱。' },
+            { emoji: '⏰', text: '需要提前预告「快要走了」', keywords: ['走', '回家', '要离开'], phrase: '让他有点心理准备，而不是突然被中断。' }
+          ],
+          responses: [
+            { main: '先看是不是饿了或太累，再谈规矩。', say: '「你是不是有点太累 / 太饿了？我们先喝口水，再慢慢说。」' },
+            { main: '用简单的一两句话说明今天不买的原因。', say: '「这个我们今天不买，今天只买晚饭要吃的东西。」' },
+            { main: '给一个小任务，转移注意力。', say: '「你可以帮妈妈找一找红色的苹果在哪吗？你来当今天的小帮手。」' }
+          ]
+        },
+        preschool: {
+          emotions: [
+            { emoji: '😠', text: '很想要却被拒绝的愤怒', keywords: ['要', '买', '想要'], phrase: '「你真的、真的很想要，结果被说不行，超级不甘心。」' },
+            { emoji: '😔', text: '觉得不公平，很失望', keywords: ['为什么不行', '不公平', '失望'], phrase: '「你会觉得：别人都有，为什么我就不行？」' },
+            { emoji: '😤', text: '觉得大人根本不懂我', keywords: ['你都', '不懂', '不知道'], phrase: '「你可能会觉得：大人根本不懂我有多想要。」' }
+          ],
+          needs: [
+            { emoji: '👂', text: '需要被看到「我真的很想要」', keywords: ['想', '很想', '想要'], phrase: '先承认他的「很想要」，再讲规则，比直接说教有用。' },
+            { emoji: '⚖️', text: '需要清楚又稳定的规则', keywords: ['可以吗', '为什么', '规则'], phrase: '同一套原则大多数时候一样，比每次看心情更让他安心。' },
+            { emoji: '🤝', text: '需要在众人面前也被尊重', keywords: ['大家', '看', '别人'], phrase: '被当众骂会让他更失控，也会更觉得丢脸。' }
+          ],
+          responses: [
+            { main: '先共情，而不是马上压情绪。', say: '「你刚刚看到那个玩具，心里特别想要，突然被说不行，一定很生气。」' },
+            { main: '重复说明今天的规则。', say: '「我知道你很想要，但我们今天只买晚饭要用的东西，玩具这次先不买。」' },
+            { main: '给他一点选择感。', say: '「你可以生气没关系，但我们不能在这里大喊。你是想牵着我慢慢走，还是先跟我去一个安静一点的地方？」' }
+          ]
+        },
+        school: {
+          emotions: [
+            { emoji: '😒', text: '觉得爸妈小气又不公平', keywords: ['小气', '别人都', '为什么', '不公平'], phrase: '「你会觉得：别人都有，为什么我们家总说不行。」' },
+            { emoji: '😤', text: '不爽自己总被当小孩', keywords: ['我又不是', '我已经', '长大'], phrase: '「你可能会想：我都这么大了，为什么不能自己做决定。」' },
+            { emoji: '😔', text: '真的很喜欢那个东西', keywords: ['很想', '一直想要', '想要'], phrase: '「你是真的很喜欢那样东西，不是随便乱要。」' }
+          ],
+          needs: [
+            { emoji: '💰', text: '需要懂一点金钱和家庭预算', keywords: ['钱', '贵', '多少', '预算'], phrase: '知道家里钱怎么安排，而不是只听到「不行」。' },
+            { emoji: '🎯', text: '需要参与讨论和决定', keywords: ['可以', '如果', '商量'], phrase: '有被问意见，会比较愿意配合。' },
+            { emoji: '📋', text: '需要练习「延迟满足」', keywords: ['现在', '马上', '等'], phrase: '体验「不是不能，而是可以晚一点」。' }
+          ],
+          responses: [
+            { main: '打开一个「聊钱」的对话。', say: '「你真的挺想要这个的，我们一起来看看它多少钱？顺便算算要攒多久。」' },
+            { main: '把家庭预算说出来。', say: '「我们这个月的钱已经先用在 XX 上，这个东西可以先放进下个月的考虑清单。」' },
+            { main: '给一个具体的「以后可以怎样」。', say: '「你可以用自己的零花钱慢慢存，或者我们约好生日 / 过年的时候再一起看看要不要买。」' }
+          ]
+        }
+      }
+    },
+    sibling_conflict: {
+      name: '兄弟姐妹吵架',
+      icon: '👧👦',
+      ageVariants: {
+        toddler: {
+          emotions: [
+            { emoji: '😡', text: '东西被抢就只有生气', keywords: ['抢', '我的', '拿走'], phrase: '「你看到自己的东西被拿走，就一下子爆炸了。」' },
+            { emoji: '😢', text: '不会表达，只能哭或者推打', keywords: ['哭', '打', '推'], phrase: '「你现在只会用哭、用身体来表达你不爽。」' },
+            { emoji: '😤', text: '觉得都是对方的错', keywords: ['他', '都是', '先'], phrase: '「你觉得肯定是他不对，心里也很委屈。」' }
+          ],
+          needs: [
+            { emoji: '🎯', text: '需要大人帮忙说出感受', keywords: ['生气', '难过', '不开心'], phrase: '需要有人帮他把「生气 / 难过」翻成一句话。' },
+            { emoji: '⚖️', text: '需要学会「轮流」的概念', keywords: ['轮流', '换', '等'], phrase: '知道不是「总有一个人输」，而是可以排顺序。' },
+            { emoji: '🛡️', text: '需要先保证身体安全（不被打、推、咬）', keywords: ['打', '推', '咬'], phrase: '先保护每个孩子的身体，再谈谁对谁错。' }
+          ],
+          responses: [
+            { main: '先冷静地拉开，停下肢体冲突。', say: '「我不能让你打人，我要先把你抱开来，我们用说的。」' },
+            { main: '帮他把感受和过程讲一遍。', say: '「你很生气，因为积木本来在你手上，后来被拿走了，对不对？」' },
+            { main: '用计时器或简单的轮流规则。', say: '「我们用计时器，这 5 分钟是哥哥的，等会儿换弟弟。」' }
+          ]
+        },
+        preschool: {
+          emotions: [
+            { emoji: '😡', text: '被抢东西很生气', keywords: ['抢', '拿走', '我的'], phrase: '「你被抢东西的时候，心里会特别不爽。」' },
+            { emoji: '😒', text: '吃醋，觉得不公平', keywords: ['偏心', '他总是', '不公平'], phrase: '「你会怀疑：是不是爸爸妈妈更喜欢他。」' },
+            { emoji: '😞', text: '觉得自己不够重要', keywords: ['不爱我', '喜欢他', '都'], phrase: '「你有点怕自己比较不被爱，所以变得很敏感。」' }
+          ],
+          needs: [
+            { emoji: '⚖️', text: '需要被公平对待', keywords: ['公平', '一样', '为什么'], phrase: '不一定每次都要一模一样，但要看得出爸妈有顾到他。' },
+            { emoji: '👁️', text: '需要有人听 TA 说委屈', keywords: ['他先', '明明', '我'], phrase: '有机会好好讲自己的版本，而不是总被要求「你是哥哥 / 姐姐，要让着他」。' },
+            { emoji: '🎯', text: '需要学习轮流和协调', keywords: ['我先', '轮流', '一起'], phrase: '知道可以「怎么轮流」而不是只能抢。' }
+          ],
+          responses: [
+            { main: '先帮两边都把感受说出来。', say: '「姐姐现在很生气被抢走；弟弟也觉得自己总是玩不到，很委屈。」' },
+            { main: '先描述事实，不急着判谁对谁错。', say: '「玩具本来在姐姐手上，后来弟弟没先问就拿走了。」' },
+            { main: '一起想「轮流或一起玩」的办法。', say: '「你们是想轮流玩，还是一起盖一个大的？我们可以试几种方法。」' }
+          ]
+        },
+        school: {
+          emotions: [
+            { emoji: '😤', text: '觉得兄弟姐妹很烦很幼稚', keywords: ['烦', '幼稚', '讨厌', '吵'], phrase: '「你觉得他特别烦，总是在打扰你做自己的事。」' },
+            { emoji: '😒', text: '觉得爸妈偏心', keywords: ['偏心', '总是', '为什么', '不公平'], phrase: '「你会想：为什么每次出事都是我被说。」' },
+            { emoji: '😔', text: '觉得自己的东西老是被打扰', keywords: ['我的', '房间', '东西', '隐私'], phrase: '「你有自己的东西和空间，会觉得老被闯进来。」' }
+          ],
+          needs: [
+            { emoji: '🚪', text: '需要自己的空间和隐私', keywords: ['房间', '隐私', '别进来', '空间'], phrase: '有一些东西、一些角落是真正属于「我自己」很重要。' },
+            { emoji: '👂', text: '需要被认真听 TA 的困扰', keywords: ['一直', '烦', '困扰'], phrase: '不只是被说「你是哥哥 / 姐姐要让着」，而是有人认真听他抱怨。' },
+            { emoji: '⚖️', text: '需要公平的规则（不是年纪大就一定要让）', keywords: ['为什么我要', '他才', '让我'], phrase: '知道「公平」不等于每次都要让小的。' }
+          ],
+          responses: [
+            { main: '先单独听他讲，承认他的烦躁。', say: '「弟弟老往你房间跑，搞得你很烦对不对？你可以好好跟我吐槽一下。」' },
+            { main: '一起订「空间和物品」的基本规则。', say: '「我们来一起订几条规矩：进别人房间前先敲门，用别人的东西要先问过。」' },
+            { main: '不强迫礼让，但要求好好说。', say: '「你的东西要不要借出去，其实是你可以决定的，但我们要用好好说的方式。」' }
+          ]
+        }
+      }
+    },
+    bedtime: {
+      name: '不肯睡觉',
+      icon: '🌙',
+      ageVariants: {
+        toddler: {
+          emotions: [
+            { emoji: '😣', text: '还想玩，舍不得结束', keywords: ['还要', '再一下', '玩', '不要'], phrase: '「你玩得正开心，突然要停下来，心里很不情愿。」' },
+            { emoji: '😨', text: '有点怕黑', keywords: ['黑', '灯', '陪', '一个人'], phrase: '「灯关掉、房间变安静，你会有点怕。」' },
+            { emoji: '😫', text: '太兴奋，大脑停不下来', keywords: ['不想睡', '不困', '还不想'], phrase: '「身体明明累了，但脑袋还在转个不停。」' }
+          ],
+          needs: [
+            { emoji: '🔄', text: '需要固定的睡前流程', keywords: ['什么时候', '睡觉', '流程'], phrase: '每天差不多的流程，让他知道接下来要做什么。' },
+            { emoji: '💗', text: '需要被安抚、被陪着', keywords: ['陪', '一起', '抱'], phrase: '有人在旁边，身体会更容易放松下来。' },
+            { emoji: '🌙', text: '需要安静、昏暗的环境', keywords: ['灯', '吵', '亮'], phrase: '先让环境安静下来，情绪才有空间安静。' }
+          ],
+          responses: [
+            { main: '设计一个每天差不多的「睡前仪式」。', say: '「我们每天都一样：先洗澡，再刷牙，再听一个故事，然后抱抱说晚安。」' },
+            { main: '用陪伴减轻他对黑暗的紧张。', say: '「妈妈会先在你旁边陪你到睡着，然后再去客厅，早上你一醒来就能看到我。」' },
+            { main: '调整房间的灯光和声音。', say: '「我们开一盏小夜灯，再放一点轻一点的音乐，这样你会更安心。」' }
+          ]
+        },
+        preschool: {
+          emotions: [
+            { emoji: '😣', text: '舍不得结束玩耍', keywords: ['还要玩', '再一下', '玩', '不想'], phrase: '「你会想：再玩一小会儿就好，根本停不下来。」' },
+            { emoji: '😴', text: '觉得睡觉太无聊', keywords: ['不想睡', '无聊', '还想'], phrase: '「跟玩玩具比起来，去睡觉实在太无聊。」' },
+            { emoji: '😨', text: '怕黑、怕做噩梦', keywords: ['黑', '噩梦', '梦', '不敢'], phrase: '「你有时候睡觉会做奇怪的梦，就有点不敢闭上眼。」' }
+          ],
+          needs: [
+            { emoji: '🔄', text: '需要一个有「要结束了」感觉的固定流程', keywords: ['流程', '顺序', '每天'], phrase: '稳定的流程能提醒大脑：要进入休息模式了。' },
+            { emoji: '💗', text: '需要睡前一小段被专心陪着的时间', keywords: ['陪', '说话', '聊'], phrase: '有一小段只属于 Ta 的「聊天时间」。' },
+            { emoji: '🛡️', text: '需要被安抚「你睡着的时候我还在」', keywords: ['你会', '在哪里', '会不会'], phrase: '知道自己睡着时，大人不会消失。' }
+          ],
+          responses: [
+            { main: '先说出他的不情愿。', say: '「你今天玩得很开心，现在突然要你停下来去睡觉，心里肯定很不甘心。」' },
+            { main: '固定一个有结束感的流程。', say: '「我们先刷牙，再选一本故事书，看完就关灯，抱一下说晚安。」' },
+            { main: '说清楚你会在哪里。', say: '「你睡着的时候，爸爸会在客厅，你早上醒来一抬头就能看到我们。」' }
+          ]
+        },
+        school: {
+          emotions: [
+            { emoji: '😤', text: '觉得自己还不困，不想被管', keywords: ['还不困', '不想睡', '还想', '不要'], phrase: '「你会觉得：我还不想睡，为什么大人老要管我。」' },
+            { emoji: '📱', text: '还想继续看手机 / 书 / 动画', keywords: ['手机', '书', '再看', '平板'], phrase: '「你的脑子还停在屏幕或故事里，很难一下子关机。」' },
+            { emoji: '😟', text: '躺着会开始胡思乱想', keywords: ['睡不着', '一直想', '担心'], phrase: '「你躺着的时候，大脑会开始想很多事，有点烦。」' }
+          ],
+          needs: [
+            { emoji: '⏰', text: '需要一个一起商量过的就寝时间', keywords: ['几点', '时间', '太早'], phrase: '可以一起决定一个大概几点上床。' },
+            { emoji: '📵', text: '需要睡前一小时不用 3C', keywords: ['手机', '平板', '屏幕'], phrase: '屏幕先关掉一段时间，大脑才比较容易休息。' },
+            { emoji: '💭', text: '如果是焦虑，需要有人听他「在担心什么」', keywords: ['担心', '怕', '明天', '烦恼'], phrase: '有人愿意听他讲讲「脑子里在想什么」。' }
+          ],
+          responses: [
+            { main: '和他协商一个大家都能接受的就寝时间。', say: '「明天要早起，我在想 9 点半上床，你觉得呢？我们可以一起再调整。」' },
+            { main: '立一个「睡前 1 小时不用 3C」的家规。', say: '「9 点以后手机都放在客厅充电，你可以看纸质书或者画画。」' },
+            { main: '开一个小小「睡前烦恼时间」。', say: '「你躺着会一直想些什么？要不要睡前 5 分钟，把这些事说给我听。」' }
+          ]
+        }
+      }
+    },
+    transition: {
+      name: '不肯收玩具',
+      icon: '⏱️',
+      ageVariants: {
+        toddler: {
+          emotions: [
+            { emoji: '😤', text: '被打断很生气', keywords: ['还要', '不要', '还在玩'], phrase: '「你玩到一半被叫停，心里很不爽。」' },
+            { emoji: '😫', text: '就是不想做，觉得好累', keywords: ['不要', '累', '不想'], phrase: '「你觉得收东西很累，也不好玩。」' },
+            { emoji: '😕', text: '不知道怎么收', keywords: ['不会', '怎么', '不知道'], phrase: '「你其实不知道该收到哪里去，只好一直拖。」' }
+          ],
+          needs: [
+            { emoji: '🎯', text: '需要有人示范「具体怎么收」', keywords: ['怎么', '哪里', '放'], phrase: '有人给他看：这个放这里，那个放那里。' },
+            { emoji: '👐', text: '需要大人一开始一起收', keywords: ['帮', '一起', '陪'], phrase: '一开始不是让他「自己收」，而是一起做。' },
+            { emoji: '🎵', text: '需要把收拾变成一个小游戏', keywords: ['玩', '游戏', '唱'], phrase: '加歌、加计时器或故事，会更有动力。' }
+          ],
+          responses: [
+            { main: '用「一起收」代替「你自己去收」。', say: '「我们一起收好不好？你收红色的，我收蓝色的，看谁更快。」' },
+            { main: '把收玩具变成一个小游戏。', say: '「我们来唱收玩具的小歌，唱完这一首，看可以收好多少。」' },
+            { main: '给非常具体的指令。', say: '「积木放进这个箱子，小车车放到那个篮子里。」' }
+          ]
+        },
+        preschool: {
+          emotions: [
+            { emoji: '😤', text: '突然被打断很烦', keywords: ['还在玩', '等一下', '突然', '还要'], phrase: '「你正在专心玩，突然被叫去收东西，觉得很烦。」' },
+            { emoji: '😑', text: '觉得自己一点选择都没有', keywords: ['为什么', '不想', '一定要'], phrase: '「你觉得都是别人说了算，自己什么都不能决定。」' },
+            { emoji: '😰', text: '被催促到有压力', keywords: ['快点', '赶紧', '催', '一直'], phrase: '「大人一直催，你心里也会变得很紧。」' }
+          ],
+          needs: [
+            { emoji: '⏰', text: '需要一点心理准备时间', keywords: ['突然', '马上', '等一下'], phrase: '在真的要收之前，先提前几分钟提醒。' },
+            { emoji: '🎛️', text: '需要一点选择权', keywords: ['我想', '可以', '选'], phrase: '可以让他决定「先收哪一个」「要不要一起收」。' },
+            { emoji: '📋', text: '需要有人把大任务拆小步', keywords: ['怎么', '不会', '好多'], phrase: '把大任务拆成小小步，让他知道从哪里开始。' }
+          ],
+          responses: [
+            { main: '提前预告，减少被打断的冲击。', say: '「你再玩 5 分钟，等闹钟响了，我们就一起把玩具收起来。」' },
+            { main: '把收拾步骤拆开来。', say: '「我们先收桌子上的积木，等会儿再收地上的小车车，好吗？」' },
+            { main: '看到他的认真和舍不得。', say: '「你刚刚搭得很认真，难怪一下子要停下来会很舍不得。」' }
+          ]
+        },
+        school: {
+          emotions: [
+            { emoji: '😤', text: '觉得很烦，一直被叫', keywords: ['知道了', '很烦', '一直', '叫'], phrase: '「你会觉得：我都知道了，为什么要一直说。」' },
+            { emoji: '😑', text: '觉得「为什么总是我要收」', keywords: ['为什么', '弟弟都不用', '我要'], phrase: '「你会觉得别人也玩了，为什么只叫我收。」' },
+            { emoji: '📱', text: '想先把正在做的事情做完', keywords: ['等一下', '看完', '先', '做完'], phrase: '「你大脑正沉在别的事情里，很难马上切换。」' }
+          ],
+          needs: [
+            { emoji: '⏰', text: '需要有机会自己安排收拾时间', keywords: ['等一下', '几点', '自己', '我知道'], phrase: '有机会自己决定「什么时候要收」。' },
+            { emoji: '⚖️', text: '需要看到家务分工的公平', keywords: ['为什么我', '他都不用', '公平'], phrase: '知道每个人都有份做，而不是「只有我被盯」。' },
+            { emoji: '🎯', text: '需要明白为什么要收拾', keywords: ['为什么', '不行', '一定要'], phrase: '懂「收拾」的原因，而不是只听「因为我是你妈 / 爸」。' }
+          ],
+          responses: [
+            { main: '给一个可以选择的时间范围。', say: '「只要晚饭前收好就行，你要现在收，还是 6 点的时候收？」' },
+            { main: '把收拾的理由讲清楚。', say: '「东西收好，才不会有人踩到受伤，下次你也更好找。」' },
+            { main: '一起讨论全家的分工，不只是盯他一个。', say: '「你觉得家里的事情怎么分比较公平？我们可以一起列一下。」' }
+          ]
+        }
+      }
+    },
+    mealtime: {
+      name: '吃饭磨蹭',
+      icon: '🍽️',
+      ageVariants: {
+        toddler: {
+          emotions: [
+            { emoji: '😐', text: '对食物没兴趣', keywords: ['不吃', '不要', '不想吃'], phrase: '「你对桌上的这些东西兴趣不大。」' },
+            { emoji: '😏', text: '把饭拿来玩更好玩', keywords: ['玩', '扔', '弄'], phrase: '「把饭拿来玩，感觉比吃进肚子更有趣。」' },
+            { emoji: '😣', text: '不饿，可能零食吃多了', keywords: ['不饿', '饱了', '零食'], phrase: '「你可能已经有点饱了，所以吃不太下。」' }
+          ],
+          needs: [
+            { emoji: '🍼', text: '可能真的不饿（零食是不是有点多）', keywords: ['零食', '饼干', '吃', '不饿'], phrase: '看看白天是不是零食吃太多。' },
+            { emoji: '🎮', text: '需要一个专心吃饭的环境', keywords: ['电视', '玩具', '手机'], phrase: '干扰少一点，比较能专注在吃。' },
+            { emoji: '⏰', text: '需要比较固定的吃饭时间', keywords: ['时间', '几点', '什么时候'], phrase: '每天差不多时间吃饭，更容易形成习惯。' }
+          ],
+          responses: [
+            { main: '先看看是不是零食吃多了。', say: '「你是不是刚刚吃了饼干？难怪现在觉得吃不下。」' },
+            { main: '先把干扰关掉。', say: '「我们吃饭的时候，先让玩具和电视休息一下，等吃完再继续。」' },
+            { main: '设定一个温和但清楚的吃饭时限。', say: '「我们吃 20 分钟，时间到了就先把桌子收掉，肚子饿了可以等下一餐。」' }
+          ]
+        },
+        preschool: {
+          emotions: [
+            { emoji: '😐', text: '对某些菜不感兴趣或者不怎么饿', keywords: ['不想吃', '不好吃', '不饿'], phrase: '「你觉得这些东西看起来没那么好吃。」' },
+            { emoji: '😏', text: '更想去做别的事', keywords: ['玩', '看', '要', '做'], phrase: '「你现在只想回去玩 / 看动画，吃饭就显得特别烦。」' },
+            { emoji: '😣', text: '被一直催，心里也有压力', keywords: ['快点', '催', '一直'], phrase: '「别人越催你，你越吃不下。」' }
+          ],
+          needs: [
+            { emoji: '🎮', text: '需要吃饭时比较专注的环境', keywords: ['电视', '玩具', '分心'], phrase: '吃饭的时候就是吃饭，其他等一等再继续。' },
+            { emoji: '⏱️', text: '需要一个合理的吃饭时长', keywords: ['很久', '一直坐', '太久'], phrase: '不是无限坐着，而是大约多长时间会结束。' },
+            { emoji: '🍴', text: '需要被尊重「我可能真的不饿」', keywords: ['吃不下', '饱了', '不饿'], phrase: '被听见「我真的吃不下」的感觉。' }
+          ],
+          responses: [
+            { main: '先描述你看到的，而不是直接怪他。', say: '「我看到你吃得很慢，是不太饿，还是不太喜欢这道菜？」' },
+            { main: '用份量帮他增加成功感。', say: '「这份可能有点多，我们先盛少一点，你吃得完会比较有成就感。」' },
+            { main: '定一个温和的吃饭界限。', say: '「我们在桌子上专心吃 20 分钟，时间到了没吃完就先收。」' }
+          ]
+        },
+        school: {
+          emotions: [
+            { emoji: '😐', text: '对某些食物特别不爱吃', keywords: ['不喜欢', '不吃', '讨厌'], phrase: '「你是真的不太喜欢某些菜，不是故意找事。」' },
+            { emoji: '📱', text: '想边吃边玩手机 / 看东西', keywords: ['手机', '视频', '看', '平板'], phrase: '「你会觉得：吃饭不看点什么太无聊了。」' },
+            { emoji: '😤', text: '觉得自己被逼着吃', keywords: ['一定要', '逼我', '强迫'], phrase: '「你会觉得：为什么非要逼我把这些吃完？」' }
+          ],
+          needs: [
+            { emoji: '🗣️', text: '需要参与讨论一周吃什么', keywords: ['不喜欢', '想吃', '商量'], phrase: '有机会说说「我更喜欢吃什么」。' },
+            { emoji: '⚖️', text: '需要理解「均衡饮食」对身体的意义', keywords: ['为什么', '不健康', '营养'], phrase: '知道为什么需要吃不同种类的食物。' },
+            { emoji: '📵', text: '需要一段「全家一起吃饭」的时间', keywords: ['一起吃', '聊天', '家人'], phrase: '感觉到吃饭是「一家人在一起的时间」，而不是被检查。' }
+          ],
+          responses: [
+            { main: '邀请他一起参与一周菜单的规划。', say: '「这一周你最想吃哪几样？我们可以一起排进菜单。」' },
+            { main: '用「身体需要」来解释营养。', say: '「每种食物身体都需要一点，吃一点菜、肉和主食，身体才比较有力气。」' },
+            { main: '把吃饭变成一家人专属的相处时间。', say: '「吃饭的时候，我们全家把手机都放在一边，一边吃一边聊聊今天发生的事。」' }
+          ]
+        }
+      }
+    },
+    // 其他 / 今天很崩溃
+    other: {
+      name: '说不清，总之今天很崩溃',
+      icon: '😵',
+      ageVariants: {
+        toddler: {
+          emotions: [
+            { emoji: '😫', text: '今天很多事都不顺心', keywords: [], phrase: '「你今天很多时候都不顺心，只能用哭或者发脾气来表达。」' },
+            { emoji: '😵', text: '太多声音、太多事情，脑子装不下', keywords: [], phrase: '「今天的声音、事情、人都很多，让你觉得好乱。」' },
+            { emoji: '😢', text: '只知道不舒服，但说不出来', keywords: [], phrase: '「你只知道自己不舒服，可是还不会用话说出来。」' }
+          ],
+          needs: [
+            { emoji: '👐', text: '需要一个可以「放心崩溃」的安全地方', keywords: [], phrase: '有人在旁边守着，不用马上被要求乖乖。' },
+            { emoji: '💗', text: '需要被接纳「你可以难过」', keywords: [], phrase: '让他知道：情绪是可以被看见的。' },
+            { emoji: '⏸️', text: '需要整天的节奏暂时慢一点', keywords: [], phrase: '今天可以少做一点事，让你和他的小神经系统都有机会休息。' }
+          ],
+          responses: [
+            { main: '先给他一个可以安全发泄的空间。', say: '「你今天真的累坏了，我陪你在这里哭一哭、生一会儿气都可以。」' },
+            { main: '把「可以崩溃」这件事说给他听。', say: '「你现在哭这么大声，是因为今天真的很辛苦。没关系，我看到啦。」' },
+            { main: '今天先把要求降到最低。', say: '「我们今天就简单一点，先休息，其他事改天再说。」' }
+          ]
+        },
+        preschool: {
+          emotions: [
+            { emoji: '😩', text: '今天整体都觉得又累又烦', keywords: [], phrase: '「你会觉得：今天怎么每一件事都好烦。」' },
+            { emoji: '😢', text: '心里的委屈挤在一起', keywords: [], phrase: '「可能有很多小小的不开心，都挤在心里没地方放。」' },
+            { emoji: '😤', text: '不知道怎么讲，只能大吼大叫', keywords: [], phrase: '「你不知道该怎么讲，只好用吼的、用哭的。」' }
+          ],
+          needs: [
+            { emoji: '👂', text: '需要一个「只听不骂」的耳朵', keywords: [], phrase: '有人愿意先听，不马上纠正你。' },
+            { emoji: '🤗', text: '需要被抱抱、被安慰', keywords: [], phrase: '有人在旁边，让他知道自己不是一个人。' },
+            { emoji: '🧸', text: '需要一小段只属于自己的温柔时光', keywords: [], phrase: '有一会儿，大人只专心陪他。' }
+          ],
+          responses: [
+            { main: '先承认：今天对你和孩子都挺难。', say: '「我感觉你今天一定也很累，也发生了不少事，所以现在只要一点小事就容易爆。」' },
+            { main: '用「只听不骂」当今天的目标。', say: '「你可以跟我说，今天哪一件事让你最生气、最难过？我先听，不会骂你。」' },
+            { main: '给他一小段专属陪伴的时间。', say: '「我们来有 10 分钟是只属于你和我，做你想做的事，其他事情等一等。」' }
+          ]
+        },
+        school: {
+          emotions: [
+            { emoji: '😵', text: '觉得整天都很炸，压力满出来', keywords: [], phrase: '「你可能会觉得：今天真的是够难熬的。」' },
+            { emoji: '😔', text: '有些事不想说，只闷在心里', keywords: [], phrase: '「你有些事不太想讲，只能憋在心里。」' },
+            { emoji: '😤', text: '很想被理解，又怕一说就被说教', keywords: [], phrase: '「你怕一说就被讲道理，只好用别的方式把情绪发出来。」' }
+          ],
+          needs: [
+            { emoji: '🛟', text: '需要有人看到「你也挺不容易」', keywords: [], phrase: '有人说出：你今天真的也不好过。' },
+            { emoji: '🕰️', text: '需要一点独处或放空的时间', keywords: [], phrase: '不用马上被问功课、被要求做事。' },
+            { emoji: '👂', text: '需要一个可以吐槽、不被评价的聊天空间', keywords: [], phrase: '可以讲一讲今天的烂事，而不是一讲就被说你不够努力。' }
+          ],
+          responses: [
+            { main: '先承认：今天真的挺辛苦。', say: '「看得出来你今天过得不太好，心里肯定也挺累的。」' },
+            { main: '给他一段不会被打扰的休息时间。', say: '「你要不要先自己待一会儿？你准备好想聊了再来找我，我都在。」' },
+            { main: '开一个「不说教」模式的聊天。', say: '「如果你想抱怨一下今天的事，我可以先当那个只听、不说教的人。」' }
+          ]
+        }
+      }
+    }
+  };
+
+  // === 鼓励信息数据库 ===
+  const encouragementMessages = {
+    // 比较难受的反应
+    raiseVoice: '你愿意把这一幕记录下来，说明你真的在乎和孩子的关系。大多数家长在很累的时候都会提高音量，你不是一个人。下次可以试试：先深呼吸 3 下，再说第一句话。',
+    threaten: '说出威胁的话，通常是因为我们真的很着急，也很无力。你现在愿意看见这点，就已经在往不一样的方向迈了一步。',
+    giveUp: '很多时候，我们选择妥协，是因为当下真的撑不住了。这不代表你是失败的家长，只代表你也需要被照顾、需要休息。',
+    cold: '冷处理，往往是因为自己的情绪也已经满出来了。还能事后回头看，本身就是很大的勇气。下次可以试着跟孩子说：「我现在需要冷静一下，等会儿再跟你说话。」',
+    compare: '拿孩子跟别人比，是很多家长从小听到大的语言，难免就会顺口说出来。你已经开始意识到自己不太想这样，这就是改变的起点。',
+    label: '给孩子贴标签的话，常常是在情绪很满、话一出口就来不及收回的时候说的。你愿意在这里诚实勾选，是一件很不容易的事。',
+    tiredBlank: '当你勾选「我也很累，脑子一片空白」，其实是在承认：你也是需要被照顾的人。这不是自私，而是诚实。',
+
+    // 比较支持性的反应
+    empathy: '你有试着先说出孩子的感受，这是非常重要的能力。对于孩子来说，那一句「你是不是很难过」会在心里留很久很久。',
+    boundary: '你有温和又坚定地说出界限，这比一味纵容或一味严厉，都更不容易。孩子会在这样的界限里，慢慢长出安全感。',
+    repair: '你愿意事后道歉或修补关系，这会让孩子学到：「人会犯错，但可以修补」。这比你永远不发脾气，更珍贵。',
+
+    // 综合鼓励
+    mixed: '你同时看见了「我哪儿做得不太好」和「我其实也有做对的地方」。这种既诚实又温柔地看自己，本身就是很成熟的养育态度。',
+    allPositive: '从今天的记录里看得出来，你已经在练习用理解和界限来陪孩子。过程还是会累，但你和孩子的关系正在被好好呵护着。',
+    allNegative: '今天可能真的特别辛苦。没有哪个家长是永远温柔、永远有耐心的。你愿意留下记录，说明你没有放弃成为什么样的父母。',
+    noSelection: '就算你现在还分不清自己当时是怎么反应的，愿意花时间打开这个页面，看一看孩子和自己，本身就是一种安静但重要的改变。'
+  };
+
+  let currentAge = 'toddler';
+  let currentScenario = null;
+  let selectedReactions = new Set();
+  let selectedResponses = new Set(); // 家长勾选想练习的回应
+  let currentAnalysis = null;
+  let records = [];
+
+  // 初始化：从 localStorage 读取记录
+  function initRecords() {
+    try {
+      const saved = localStorage.getItem('parentingRecords');
+      if (saved) {
+        records = JSON.parse(saved);
+      }
+    } catch (e) {
+      console.error('读取记录失败:', e);
+      records = [];
+    }
+  }
+
+  // 存储记录到 localStorage
+  function saveRecords() {
+    try {
+      localStorage.setItem('parentingRecords', JSON.stringify(records));
+    } catch (e) {
+      console.error('保存失败:', e);
+    }
+  }
+
+  // === 年龄选择 ===
+  function selectAge(age, element) {
+    document.querySelectorAll('.age-button').forEach(b => b.classList.remove('active'));
+    element.classList.add('active');
+    currentAge = age;
+  }
+
+  // === 情境选择 ===
+  function selectScenario(scenario, element) {
+    document.querySelectorAll('.scenario-card').forEach(c => c.classList.remove('active'));
+    element.classList.add('active');
+    currentScenario = scenario;
+  }
+
+  // === 反应选择 ===
+  function toggleReaction(reaction, element, event) {
+    const checkbox = element.querySelector('input[type="checkbox"]');
+    
+    if (event && event.target !== checkbox) {
+      checkbox.checked = !checkbox.checked;
+    }
+    
+    if (checkbox.checked) {
+      element.classList.add('selected');
+      selectedReactions.add(reaction);
+    } else {
+      element.classList.remove('selected');
+      selectedReactions.delete(reaction);
+    }
+  }
+
+  // 回应句子的勾选
+  function toggleResponseSelection(index, checkbox, event) {
+    if (event && event.target !== checkbox) {
+      checkbox.checked = !checkbox.checked;
+    }
+    if (checkbox.checked) {
+      selectedResponses.add(index);
+    } else {
+      selectedResponses.delete(index);
+    }
+  }
+
+  // === Tab 切换 ===
+  function switchTab(name) {
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
+
+    const tabs = { translate: 0, note: 1, history: 2 };
+    const tabContents = ['translateTab', 'noteTab', 'historyTab'];
+    
+    document.getElementById(tabContents[tabs[name]]).classList.add('active');
+    document.querySelectorAll('.tab-button')[tabs[name]].classList.add('active');
+
+    if (name === 'history') {
+      displayHistory();
+    }
+  }
+
+  // === 步骤切换 ===
+  function showStep1() {
+    document.getElementById('step1').classList.remove('hidden');
+    document.getElementById('step2').classList.add('hidden');
+    document.getElementById('step3').classList.add('hidden');
+    updateStepIndicator(1);
+  }
+
+  function showStep2() {
+    if (!currentScenario) {
+      alert('请先选择一个情境（随便选一个你最有感觉的就行）');
+      return;
+    }
+
+    analyzeAndDisplay();
+    document.getElementById('step1').classList.add('hidden');
+    document.getElementById('step2').classList.remove('hidden');
+    document.getElementById('step3').classList.add('hidden');
+    updateStepIndicator(2);
+  }
+
+  function showStep3() {
+    selectedReactions.clear();
+    document.querySelectorAll('.reaction-card').forEach(card => {
+      card.classList.remove('selected');
+      const cb = card.querySelector('input[type="checkbox"]');
+      if (cb) cb.checked = false;
+    });
+    
+    document.getElementById('step1').classList.add('hidden');
+    document.getElementById('step2').classList.add('hidden');
+    document.getElementById('step3').classList.remove('hidden');
+    updateStepIndicator(3);
+  }
+
+  function updateStepIndicator(step) {
+    for (let i = 1; i <= 3; i++) {
+      const dot = document.getElementById(`stepDot${i}`);
+      if (i === step) {
+        dot.classList.add('active');
+      } else {
+        dot.classList.remove('active');
+      }
+    }
+  }
+
+  // === 按年龄个性化分析 ===
+  function analyzeAndDisplay() {
+    const template = scenarioTemplates[currentScenario];
+    const ageData = template.ageVariants[currentAge];
+    const userText = document.getElementById('scenarioText').value.trim();
+
+    let emotions = [...ageData.emotions];
+    emotions.forEach(e => {
+      let score = 0;
+      e.keywords.forEach(k => {
+        if (userText.includes(k)) {
+          score += 2;
+        }
+      });
+      e.relevance = score > 0 ? score : 1;
+    });
+    emotions.sort((a, b) => b.relevance - a.relevance);
+    emotions = emotions.slice(0, 3);
+
+    let needs = [...ageData.needs];
+    needs.forEach(n => {
+      let score = 0;
+      n.keywords.forEach(k => {
+        if (userText.includes(k)) {
+          score += 2;
+        }
+      });
+      n.relevance = score > 0 ? score : 1;
+    });
+    needs.sort((a, b) => b.relevance - a.relevance);
+    needs = needs.slice(0, 3);
+
+    let responses = [...ageData.responses];
+
+    currentAnalysis = { emotions, needs, responses, userText };
+    selectedResponses.clear();
+    displayAnalysis();
+  }
+
+  function displayAnalysis() {
+    const { emotions, needs, responses } = currentAnalysis;
+    
+    const emotionHTML = emotions
+      .map(e => `
+        <div class="emotion-badge">
+          <span class="emotion-emoji">${e.emoji}</span>${e.text}
+          <div class="emotion-phrase">👉 你可以对孩子说：${e.phrase}</div>
+        </div>
+      `)
+      .join('');
+    document.getElementById('emotionItems').innerHTML = emotionHTML;
+
+    const needHTML = needs
+      .map(n => `
+        <div class="need-badge">
+          <span class="emotion-emoji">${n.emoji}</span>${n.text}
+          <div class="need-phrase">💡 重点：${n.phrase}</div>
+        </div>
+      `)
+      .join('');
+    document.getElementById('needItems').innerHTML = needHTML;
+
+    const responseHTML = responses
+      .map((r, i) => `
+        <div class="response-item">
+          <span class="response-number">${i+1}</span>
+          <span class="response-main">${r.main}</span>
+          <div class="response-say">
+            👉 可以直接说：<strong>「${r.say.replace(/^[「」]/g, '').replace(/」$/g, '')}」</strong>
+          </div>
+          <label class="response-select" onclick="toggleResponseSelection(${i}, this.querySelector('input'), event)">
+            <input type="checkbox" onchange="toggleResponseSelection(${i}, this, event)"> 想练练这句
+          </label>
+        </div>
+      `)
+      .join('');
+    document.getElementById('responseItems').innerHTML = responseHTML;
+  }
+
+  // === 生成鼓励信息 ===
+  function generateEncouragement() {
+    const reactions = Array.from(selectedReactions);
+    
+    if (reactions.length === 0) {
+      return {
+        emoji: '💪',
+        highlight: '你愿意留下记录，本身就是在照顾你和孩子的关系。',
+        message: encouragementMessages.noSelection
+      };
+    }
+
+    const negativeReactions = ['raiseVoice', 'threaten', 'giveUp', 'cold', 'compare', 'label'];
+    const positiveReactions = ['empathy', 'boundary', 'repair'];
+    
+    const negativeCount = reactions.filter(r => negativeReactions.includes(r)).length;
+    const positiveCount = reactions.filter(r => positiveReactions.includes(r)).length;
+
+    let messages = [];
+
+    reactions.forEach(r => {
+      if (encouragementMessages[r]) {
+        messages.push(encouragementMessages[r]);
+      }
+    });
+
+    let highlight = '';
+    if (positiveCount > 0 && negativeCount === 0) {
+      messages.push(encouragementMessages.allPositive);
+      highlight = '你今天其实做了很多「对关系有帮助」的事情。';
+    } else if (negativeCount > 0 && positiveCount === 0) {
+      messages.push(encouragementMessages.allNegative);
+      highlight = '今天真的挺不容易的，你依然没有放弃这段关系。';
+    } else if (positiveCount > 0 && negativeCount > 0) {
+      messages.push(encouragementMessages.mixed);
+      highlight = '你同时看见自己的不完美和努力，这就是很成熟的父母样子。';
+    }
+
+    const selectedMessages = messages.slice(0, 2).join('\n\n');
+
+    return {
+      emoji: positiveCount >= negativeCount ? '🌟' : '💪',
+      highlight: highlight || '你正在一点点调整自己和孩子的相处方式。',
+      message: selectedMessages
+    };
+  }
+
+  // === 生成记录并保存 ===
+  function goToNote() {
+    if (!currentScenario || !currentAnalysis) {
+      alert('请先完成情绪翻译步骤（第 1 和第 2 步）。');
+      return;
+    }
+    
+    generateNote();
+    switchTab('note');
+  }
+
+  function generateNote() {
+    if (!currentScenario || !currentAnalysis) {
+      document.getElementById('noteBox').innerHTML = '<span class="note-placeholder">请先完成左边的情绪翻译步骤。</span>';
+      document.getElementById('encouragementSection').innerHTML = '';
+      return;
+    }
+
+    const template = scenarioTemplates[currentScenario];
+    const text = document.getElementById('scenarioText').value.trim();
+    const { emotions, needs, responses } = currentAnalysis;
+
+    const ageNames = {
+      toddler: '1-3 岁',
+      preschool: '3-6 岁',
+      school: '6-12 岁'
+    };
+
+    const reactionMap = {
+      raiseVoice: '当时情绪比较大（声音有变大）',
+      threaten: '说了「你再…我就…」这样的话',
+      giveUp: '后来先妥协 / 放弃坚持',
+      cold: '有先冷处理一阵子',
+      compare: '有拿孩子跟别人比较',
+      label: '说了一些给孩子贴标签的话',
+      empathy: '有先说出孩子的感受',
+      boundary: '有温和但坚定地说清界限',
+      repair: '事后有试着修复关系',
+      tiredBlank: '我自己也很累，当时脑子一片空白'
+    };
+
+    const myReactions = Array.from(selectedReactions)
+      .map(r => '・' + (reactionMap[r] || r))
+      .join('\n') || '・今天还分不太清自己的反应，只是先记下来。';
+
+    // 取家长勾选的回应句，最多 2 句；如果没勾，就拿第 1 句
+    let practiceList = [];
+    if (selectedResponses.size > 0) {
+      Array.from(selectedResponses).slice(0, 2).forEach(idx => {
+        const item = responses[idx];
+        if (item) {
+          practiceList.push(`・${item.main}\n  👉 可以试着说：「${item.say.replace(/^[「」]/g, '').replace(/」$/g, '')}」`);
+        }
+      });
+    } else if (responses.length > 0) {
+      const item = responses[0];
+      practiceList.push(`・${item.main}\n  👉 可以试着说：「${item.say.replace(/^[「」]/g, '').replace(/」$/g, '')}」`);
+    }
+
+    let eventSection = '';
+    if (text) {
+      const shortText = text.length > 80 ? text.slice(0, 80) + '...' : text;
+      eventSection = `🎯 今天大概发生了什么：
+${shortText}
+
+`;
+    } else {
+      eventSection = `🎯 今天大概发生了什么：
+（今天没有特别写，但我愿意停下来回想这一幕。）
+
+`;
+    }
+
+    const note = `📅 ${new Date().toLocaleDateString('zh-CN')}｜${template.icon} ${template.name}
+👶 孩子年龄：大约 ${ageNames[currentAge]}
+
+${eventSection}💭 孩子可能的感受：
+・${emotions.map(e => e.text).join('\n・')}
+
+💚 孩子真正需要的，可能包括：
+・${needs.map(n => n.text).join('\n・')}
+
+🤔 我当时大致上的反应：
+${myReactions}
+
+💡 下次我想练习的一两句话：
+${practiceList.join('\n') || '・暂时还没想到，先给自己一点时间。'}
+
+———
+记录时间：${new Date().toLocaleString('zh-CN')}`;
+
+    document.getElementById('noteBox').textContent = note;
+
+    // 生成鼓励信息
+    const encouragement = generateEncouragement();
+    const encouragementHTML = `
+      <div class="encouragement-box">
+        <div class="encouragement-title">
+          <span>${encouragement.emoji}</span> 给你的一个小鼓励
+        </div>
+        <div class="encouragement-content">
+          <div class="encouragement-highlight">${encouragement.highlight}</div>
+          ${encouragement.message.replace(/\n\n/g, '<br><br>')}
+        </div>
+      </div>
+    `;
+    document.getElementById('encouragementSection').innerHTML = encouragementHTML;
+
+    // 建立记录对象
+    const record = {
+      id: Date.now(),
+      date: new Date().toISOString(),
+      age: currentAge,
+      ageName: ageNames[currentAge],
+      scenario: currentScenario,
+      scenarioName: template.name,
+      text: text || '（未填写详细情况）',
+      emotions: emotions.map(e => e.text),
+      needs: needs.map(n => n.text),
+      responses: responses,
+      selectedResponseIndexes: Array.from(selectedResponses),
+      reactions: Array.from(selectedReactions),
+      note: note,
+      encouragement: encouragement.message
+    };
+
+    // 如果 1 分钟内相同情境 + 同样内容，则覆盖
+    const existingIndex = records.findIndex(r => 
+      r.scenario === record.scenario && 
+      r.text === record.text && 
+      Math.abs(new Date(r.date) - new Date(record.date)) < 60000
+    );
+
+    if (existingIndex >= 0) {
+      records[existingIndex] = record;
+    } else {
+      records.unshift(record);
+    }
+
+    // 最多保留 50 条
+    records = records.slice(0, 50);
+    saveRecords();
+    updateHistoryCount();
+  }
+
+  function regenerateNote() {
+    generateNote();
+  }
+
+  function copyNote() {
+    const noteBox = document.getElementById('noteBox');
+    const text = noteBox.textContent;
+    const copyHint = document.getElementById('copyHint');
+    if (!text || text.includes('请先完成')) {
+      alert('请先完成情绪翻译的 3 个步骤，再复制记录。');
+      return;
+    }
+    
+    const encouragementText = document.querySelector('.encouragement-content')?.textContent || '';
+    const fullText = text + (encouragementText ? '\n\n💪 给自己的一个小鼓励：\n' + encouragementText : '');
+    
+    navigator.clipboard.writeText(fullText).then(() => {
+      copyHint.textContent = '✅ 已复制到剪贴板，可以粘贴到微信、备忘录或发给家人。';
+      setTimeout(() => {
+        copyHint.textContent = '';
+      }, 3500);
+    }).catch(() => {
+      alert('复制失败，请手动选中文字复制。');
+    });
+  }
+
+  // === 每周回顾 ===
+  function displayHistory() {
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+    const recentRecords = records.filter(r => new Date(r.date) >= sevenDaysAgo);
+
+    const historyList = document.getElementById('historyList');
+    const summaryBox = document.getElementById('historySummary');
+
+    if (recentRecords.length === 0) {
+      historyList.innerHTML = `
+        <div class="empty-history">
+          <div class="empty-history-icon">📭</div>
+          <p>过去 7 天还没有记录。</p>
+          <p style="font-size: 0.9em; color: #999; margin-top: 8px;">完成一次情绪翻译之后，就可以在这里看到自己的练习轨迹。</p>
+        </div>
+      `;
+      summaryBox.classList.add('hidden');
+      summaryBox.textContent = '';
+      return;
+    }
+
+    // 小统计：最多的情境，正向 / 比较难的反应次数
+    const scenarioCount = {};
+    const reactionMapShort = {
+      raiseVoice: '声音变大',
+      threaten: '说了威胁的话',
+      giveUp: '先妥协放弃',
+      cold: '冷处理',
+      compare: '拿别人比较',
+      label: '贴标签',
+      empathy: '有同理',
+      boundary: '有设界限',
+      repair: '有修复关系',
+      tiredBlank: '自己也很累'
+    };
+    const negativeReactions = ['raiseVoice', 'threaten', 'giveUp', 'cold', 'compare', 'label'];
+    const positiveReactions = ['empathy', 'boundary', 'repair'];
+
+    let negativeTimes = 0;
+    let positiveTimes = 0;
+
+    recentRecords.forEach(r => {
+      scenarioCount[r.scenarioName] = (scenarioCount[r.scenarioName] || 0) + 1;
+      (r.reactions || []).forEach(re => {
+        if (negativeReactions.includes(re)) negativeTimes++;
+        if (positiveReactions.includes(re)) positiveTimes++;
+      });
+    });
+
+    let topScenario = '';
+    let topScenarioCount = 0;
+    Object.entries(scenarioCount).forEach(([name, count]) => {
+      if (count > topScenarioCount) {
+        topScenarioCount = count;
+        topScenario = name;
+      }
+    });
+
+    const summaryLines = [];
+    summaryLines.push(`这 7 天，你一共记录了 ${recentRecords.length} 次亲子互动。`);
+    if (topScenario) {
+      summaryLines.push(`最常出现的情况是：${topScenario}（大概 ${topScenarioCount} 次）。`);
+    }
+    if (positiveTimes > 0 || negativeTimes > 0) {
+      summaryLines.push(`在这些记录里，你有 ${positiveTimes} 次用了「同理 / 设界限 / 修复关系」，有 ${negativeTimes} 次出现了「声音变大、威胁、冷处理」这类反应。`);
+      if (positiveTimes > negativeTimes) {
+        summaryLines.push('总体来说，你已经越来越常用「理解 + 清晰界限」的方式陪孩子了。');
+      } else {
+        summaryLines.push('虽然有时候情绪会先冲出来，但你愿意回头看，这本身就是很重要的改变。');
+      }
+    } else {
+      summaryLines.push('你正在慢慢建立记录的习惯，之后可以多勾选自己的反应，看到更多细节。');
+    }
+
+    summaryBox.textContent = summaryLines.join('\n');
+    summaryBox.classList.remove('hidden');
+
+    const historyHTML = recentRecords.map(r => {
+      const date = new Date(r.date);
+      const dateStr = `${date.getMonth() + 1}/${date.getDate()} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+      
+      const eventText = r.text === '（未填写详细情况）' ? '（未填写详细情况）' : r.text;
+      
+      return `
+        <div class="history-item">
+          <div class="history-header">
+            <div class="history-date">${dateStr}</div>
+            <div class="history-scenario">${r.ageName || ''}｜${r.scenarioName}</div>
+          </div>
+          <div class="history-content">
+            <strong>大概发生了什么：</strong>${eventText}<br>
+            <strong>孩子的感受：</strong>${r.emotions.join('、')}<br>
+            <strong>我的反应：</strong>${r.reactions.length > 0 ? r.reactions.map(re => reactionMapShort[re] || re).join('、') : '未勾选'}<br>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    historyList.innerHTML = historyHTML;
+  }
+
+  function updateHistoryCount() {
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    const recentCount = records.filter(r => new Date(r.date) >= sevenDaysAgo).length;
+    
+    if (recentCount > 0) {
+      document.querySelectorAll('.tab-button')[2].innerHTML = `📊 每周回顾 (${recentCount})`;
+    } else {
+      document.querySelectorAll('.tab-button')[2].innerHTML = `📊 每周回顾`;
+    }
+  }
+
+  function clearAllRecords() {
+    if (!confirm('确定要清空所有记录吗？\n（这只是删除本设备浏览器里的记录，不会影响其他地方）')) {
+      return;
+    }
+    records = [];
+    saveRecords();
+    updateHistoryCount();
+    displayHistory();
+  }
+
+  window.addEventListener('load', () => {
+    initRecords();
+    updateHistoryCount();
+  });
+</script>
+</body>
+</html> 

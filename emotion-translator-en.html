@@ -1,0 +1,1955 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Parent–Child Emotion Translator | Good4Parents ❤️ Good4Children</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    .header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 30px 40px;
+      text-align: center;
+    }
+    .header h1 {
+      font-size: 2.2em;
+      margin-bottom: 8px;
+    }
+    .header .subtitle {
+      font-size: 1.05em;
+      opacity: 0.98;
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+    .header .subtitle span {
+      display: block;
+      font-size: 0.9em;
+      opacity: 0.9;
+      margin-top: 6px;
+    }
+    
+    .tab-navigation {
+      display: flex;
+      background: #f8f9fa;
+      border-bottom: 2px solid #e9ecef;
+    }
+    .tab-button {
+      flex: 1;
+      padding: 16px;
+      background: none;
+      border: none;
+      font-size: 1.02em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      color: #666;
+      font-family: inherit;
+    }
+    .tab-button.active {
+      background: white;
+      color: #667eea;
+      border-bottom: 3px solid #667eea;
+    }
+    .tab-button:hover {
+      background: #e9ecef;
+    }
+    .tab-content {
+      display: none;
+      padding: 30px;
+    }
+    .tab-content.active {
+      display: block;
+    }
+
+    /* Step indicator */
+    .step-indicator {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 20px;
+      padding: 18px;
+      background: #f8f9ff;
+      border-radius: 12px;
+      flex-wrap: wrap;
+    }
+    .step-dot {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #e0e0e0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: #999;
+      font-size: 1.1em;
+    }
+    .step-dot.active {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      transform: scale(1.2);
+    }
+    .step-arrow {
+      color: #ccc;
+      font-size: 1.2em;
+    }
+
+    /* Age selector */
+    .age-selector {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 20px 0;
+    }
+    .age-button {
+      padding: 10px 20px;
+      border: 2px solid #e0e0e0;
+      border-radius: 25px;
+      background: white;
+      cursor: pointer;
+      font-size: 0.95em;
+      font-weight: bold;
+      transition: all 0.3s;
+      font-family: inherit;
+    }
+    .age-button:hover {
+      background: #f0f4ff;
+    }
+    .age-button.active {
+      background: #667eea;
+      color: white;
+      border-color: #667eea;
+    }
+
+    /* Scenario cards */
+    .scenario-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+    .scenario-card {
+      background: white;
+      border: 3px solid #e0e0e0;
+      border-radius: 15px;
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      user-select: none;
+    }
+    .scenario-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
+    .scenario-card.active {
+      border-color: #667eea;
+      background: linear-gradient(135deg, #f0f4ff 0%, #e8ecff 100%);
+      box-shadow: 0 8px 20px rgba(102,126,234,0.3);
+    }
+    .scenario-icon {
+      font-size: 3.5em;
+      margin-bottom: 10px;
+    }
+    .scenario-name {
+      font-size: 1.02em;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 4px;
+    }
+    .scenario-desc {
+      font-size: 0.84em;
+      color: #777;
+      line-height: 1.4;
+    }
+
+    /* Emotion cards */
+    .emotion-result {
+      background: #fff9e6;
+      border-radius: 15px;
+      padding: 25px;
+      margin: 20px 0;
+      border-left: 5px solid #ffc107;
+    }
+    .emotion-title {
+      font-size: 1.24em;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .emotion-items {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .emotion-badge {
+      background: white;
+      padding: 10px 16px;
+      border-radius: 25px;
+      font-size: 1em;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      max-width: 100%;
+    }
+    .emotion-emoji {
+      font-size: 1.25em;
+    }
+    .emotion-phrase {
+      font-size: 0.84em;
+      color: #777;
+      margin-top: 4px;
+      width: 100%;
+    }
+
+    /* Need cards */
+    .need-result {
+      background: #e8f5e9;
+      border-radius: 15px;
+      padding: 25px;
+      margin: 20px 0;
+      border-left: 5px solid #4caf50;
+    }
+    .need-title {
+      font-size: 1.24em;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .need-items {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .need-badge {
+      background: white;
+      padding: 10px 16px;
+      border-radius: 25px;
+      font-size: 1em;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      max-width: 100%;
+    }
+    .need-phrase {
+      font-size: 0.84em;
+      color: #777;
+      margin-top: 4px;
+      width: 100%;
+    }
+
+    /* Response suggestions */
+    .response-result {
+      background: #e3f2fd;
+      border-radius: 15px;
+      padding: 25px;
+      margin: 20px 0;
+      border-left: 5px solid #2196f3;
+    }
+    .response-title {
+      font-size: 1.24em;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .response-item {
+      background: white;
+      padding: 14px 14px 10px 14px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      font-size: 0.97em;
+      color: #444;
+      position: relative;
+    }
+    .response-number {
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      background: #2196f3;
+      color: white;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 24px;
+      margin-right: 8px;
+      font-size: 0.9em;
+      font-weight: bold;
+    }
+    .response-main {
+      font-weight: 600;
+      margin-bottom: 4px;
+      display: inline-block;
+    }
+    .response-say {
+      font-size: 0.93em;
+      color: #555;
+      margin-left: 30px;
+    }
+    .response-say strong {
+      font-weight: 600;
+    }
+    .response-select {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.8em;
+      color: #666;
+      cursor: pointer;
+    }
+    .response-select input {
+      cursor: pointer;
+    }
+
+    /* My reaction options */
+    .reaction-options {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 12px;
+      margin: 20px 0;
+    }
+    .reaction-card {
+      background: #f8f9fa;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      padding: 12px 15px;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .reaction-card:hover {
+      background: #e9ecef;
+    }
+    .reaction-card.selected {
+      background: #e8f5e9;
+      border-color: #4caf50;
+    }
+    .reaction-checkbox {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+      margin-top: 2px;
+    }
+    .reaction-text {
+      font-size: 0.95em;
+      color: #333;
+      flex: 1;
+      cursor: pointer;
+      line-height: 1.5;
+    }
+    .reaction-label-main {
+      font-weight: 600;
+    }
+    .reaction-label-sub {
+      font-size: 0.86em;
+      color: #666;
+      margin-top: 2px;
+      display: block;
+    }
+
+    /* Encouragement box */
+    .encouragement-box {
+      background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+      border-radius: 15px;
+      padding: 20px;
+      margin: 20px 0;
+      border-left: 5px solid #ff9800;
+    }
+    .encouragement-title {
+      font-size: 1.17em;
+      font-weight: bold;
+      color: #e65100;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .encouragement-content {
+      font-size: 0.99em;
+      line-height: 1.7;
+      color: #555;
+    }
+    .encouragement-highlight {
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 80px;
+      border-radius: 10px;
+      border: 2px solid #dfe4ea;
+      padding: 12px;
+      font-size: 1em;
+      font-family: inherit;
+      resize: vertical;
+      outline: none;
+    }
+    textarea:focus {
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
+    }
+
+    .btn {
+      padding: 12px 24px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      font-size: 1.03em;
+      font-weight: 600;
+      font-family: inherit;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(102,126,234,0.35);
+    }
+    .btn-secondary {
+      background: white;
+      color: #667eea;
+      border: 2px solid #667eea;
+    }
+    .btn-secondary:hover {
+      background: #667eea;
+      color: white;
+    }
+    .btn-danger {
+      background: #fff5f5;
+      color: #e53935;
+      border: 1px solid #ffcdd2;
+    }
+    .btn-danger:hover {
+      background: #ffcdd2;
+      color: #b71c1c;
+    }
+    .btn-large {
+      padding: 16px 32px;
+      font-size: 1.15em;
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      margin-top: 25px;
+    }
+
+    .section-card {
+      background: #f8f9fa;
+      border-radius: 15px;
+      padding: 25px;
+      margin-bottom: 20px;
+    }
+    
+    .section-title {
+      font-size: 1.33em;
+      font-weight: bold;
+      color: #2c3e50;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-subtitle {
+      font-size: 0.9em;
+      color: #777;
+      margin-bottom: 10px;
+      font-style: italic;
+    }
+
+    .hint-text {
+      font-size: 0.9em;
+      color: #666;
+      margin-top: 8px;
+      font-style: italic;
+    }
+
+    .note-box {
+      background: white;
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      padding: 20px;
+      margin-top: 15px;
+      min-height: 150px;
+      white-space: pre-wrap;
+      line-height: 1.8;
+      font-size: 0.98em;
+      color: #333;
+    }
+    .note-placeholder {
+      color: #999;
+      font-style: italic;
+    }
+    .copy-hint {
+      margin-top: 8px;
+      font-size: 0.85em;
+      color: #2e7d32;
+      min-height: 1.2em;
+    }
+
+    /* Weekly review */
+    .history-summary {
+      background: #f0f4ff;
+      border-radius: 12px;
+      padding: 15px 18px;
+      margin-bottom: 20px;
+      border-left: 4px solid #667eea;
+      font-size: 0.95em;
+      color: #34495e;
+      line-height: 1.6;
+      white-space: pre-wrap;
+    }
+    .history-item {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 15px;
+      border-left: 5px solid #667eea;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .history-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .history-date {
+      font-weight: bold;
+      color: #667eea;
+      font-size: 1.02em;
+    }
+    .history-scenario {
+      background: #f0f4ff;
+      padding: 5px 12px;
+      border-radius: 15px;
+      font-size: 0.88em;
+      color: #667eea;
+    }
+    .history-content {
+      font-size: 0.94em;
+      line-height: 1.6;
+      color: #555;
+    }
+    .empty-history {
+      text-align: center;
+      padding: 40px 20px;
+      color: #999;
+    }
+    .empty-history-icon {
+      font-size: 4em;
+      margin-bottom: 15px;
+    }
+
+    /* References */
+    .reference-section {
+      background: #f8f9fa;
+      border-radius: 15px;
+      padding: 25px;
+      margin-top: 30px;
+      border-left: 5px solid #607d8b;
+    }
+    .reference-title {
+      font-size: 1.15em;
+      font-weight: bold;
+      color: #37474f;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .reference-list {
+      font-size: 0.9em;
+      line-height: 1.8;
+      color: #555;
+    }
+    .reference-item {
+      margin-bottom: 12px;
+      padding-left: 20px;
+      text-indent: -20px;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      .header h1 {
+        font-size: 1.6em;
+      }
+      .header .subtitle {
+        font-size: 0.96em;
+      }
+      .scenario-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .step-indicator {
+        padding: 15px 10px;
+      }
+      .step-dot {
+        width: 35px;
+        height: 35px;
+        font-size: 1em;
+      }
+      .tab-button {
+        font-size: 0.88em;
+        padding: 12px 8px;
+      }
+      .reaction-options {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>🎯 Parent–Child Emotion Translator</h1>
+    <p class="subtitle">
+      Spend 3 minutes turning "that meltdown moment today" into:
+      <br>Your child's possible inner voice + what was going on with you + 1–2 lines you could try next time.
+      <span>You don't need to be a perfect parent. If you're willing to see your child and yourself, you're already moving forward.</span>
+    </p>
+  </div>
+
+  <div class="tab-navigation">
+    <button class="tab-button active" onclick="switchTab('translate')">🎯 Translate Today</button>
+    <button class="tab-button" onclick="switchTab('note')">📝 Today’s Note</button>
+    <button class="tab-button" onclick="switchTab('history')">📊 Weekly Review</button>
+  </div>
+
+  <!-- Tab 1: Emotion translation -->
+  <div id="translateTab" class="tab-content active">
+    <!-- Step indicator -->
+    <div class="step-indicator">
+      <div class="step-dot active" id="stepDot1">1</div>
+      <div class="step-arrow">→</div>
+      <div class="step-dot" id="stepDot2">2</div>
+      <div class="step-arrow">→</div>
+      <div class="step-dot" id="stepDot3">3</div>
+    </div>
+
+    <!-- Step 1 -->
+    <div id="step1" class="section-card">
+      <div class="section-title">
+        <span>1️⃣</span> About how old is your child?
+      </div>
+      <p class="section-subtitle">
+        Just pick the age range that feels roughly right. The translation will fit better if we know the stage, not the exact age.
+      </p>
+      
+      <div class="age-selector">
+        <button class="age-button active" onclick="selectAge('toddler', this)">1–3 yrs · Toddler</button>
+        <button class="age-button" onclick="selectAge('preschool', this)">3–6 yrs · Preschool</button>
+        <button class="age-button" onclick="selectAge('school', this)">6–12 yrs · School age</button>
+      </div>
+
+      <div class="section-title" style="margin-top: 30px;">
+        What kind of situation was it today?
+      </div>
+      <p class="section-subtitle">
+        Just pick the one that feels the closest. No need to overthink — this is just a starting point.
+      </p>
+      
+      <div class="scenario-grid" id="scenarioGrid">
+        <div class="scenario-card" onclick="selectScenario('separation', this)">
+          <div class="scenario-icon">🏫</div>
+          <div class="scenario-name">Doesn’t want to go to school / separation struggle</div>
+          <div class="scenario-desc">Clinging, crying, refuses to say goodbye or go</div>
+        </div>
+        <div class="scenario-card" onclick="selectScenario('public_tantrum', this)">
+          <div class="scenario-icon">🛒</div>
+          <div class="scenario-name">Meltdown in public</div>
+          <div class="scenario-desc">Crying, screaming in a supermarket, park, or other public place</div>
+        </div>
+        <div class="scenario-card" onclick="selectScenario('sibling_conflict', this)">
+          <div class="scenario-icon">👧👦</div>
+          <div class="scenario-name">Sibling fights</div>
+          <div class="scenario-desc">Fighting over toys, complaining, “That’s not fair”</div>
+        </div>
+        <div class="scenario-card" onclick="selectScenario('bedtime', this)">
+          <div class="scenario-icon">🌙</div>
+          <div class="scenario-name">Refusing bedtime</div>
+          <div class="scenario-desc">“I’m not sleepy”, keeps playing, stalling for a long time</div>
+        </div>
+        <div class="scenario-card" onclick="selectScenario('transition', this)">
+          <div class="scenario-icon">⏱️</div>
+          <div class="scenario-name">Doesn’t want to clean up / transition</div>
+          <div class="scenario-desc">Asked to clean up or switch tasks, and they drag their feet or flat-out refuse</div>
+        </div>
+        <div class="scenario-card" onclick="selectScenario('mealtime', this)">
+          <div class="scenario-icon">🍽️</div>
+          <div class="scenario-name">Mealtime battles</div>
+          <div class="scenario-desc">Takes forever, plays instead of eating, says they’re not hungry</div>
+        </div>
+        <div class="scenario-card" onclick="selectScenario('other', this)">
+          <div class="scenario-icon">😵</div>
+          <div class="scenario-name">Hard to describe, just a rough day</div>
+          <div class="scenario-desc">Doesn’t quite fit above, or lots of small things stacked up</div>
+        </div>
+      </div>
+
+      <div style="margin-top: 25px;">
+        <label style="font-weight: bold; color: #333; margin-bottom: 8px; display: block;">
+          Want to jot down what happened? (optional)
+        </label>
+        <textarea id="scenarioText" placeholder="Example: Right before we had to leave, they started crying hard. I lost it and ended up yelling. (You can also leave this blank.)"></textarea>
+        <div class="hint-text">
+          You don’t have to type anything. If you do, the translation can be a bit more tailored to your situation.
+        </div>
+      </div>
+
+      <div class="button-row">
+        <button class="btn btn-primary btn-large" onclick="showStep2()">
+          See what might be going on for my child →
+        </button>
+      </div>
+    </div>
+
+    <!-- Step 2 -->
+    <div id="step2" class="section-card hidden">
+      <div class="section-title">
+        <span>2️⃣</span> Translation: What might be happening inside my child?
+      </div>
+      <p class="section-subtitle">
+        These are just possibilities, not “the truth”. Pick the lines that feel closest — they’re conversation starters, not diagnoses.
+      </p>
+
+      <!-- Child's feelings -->
+      <div class="emotion-result">
+        <div class="emotion-title">
+          <span>💭</span> How your child might be feeling (you can say these out loud to them)
+        </div>
+        <div class="emotion-items" id="emotionItems"></div>
+      </div>
+
+      <!-- Child's needs -->
+      <div class="need-result">
+        <div class="need-title">
+          <span>💚</span> What your child might really need (beyond “just listen”)
+        </div>
+        <div class="need-items" id="needItems"></div>
+      </div>
+
+      <!-- What I can say/do -->
+      <div class="response-result">
+        <div class="response-title">
+          <span>💡</span> 1–2 things I could try next time (tick the ones you’d like to practice)
+        </div>
+        <div id="responseItems"></div>
+      </div>
+
+      <div class="button-row">
+        <button class="btn btn-secondary" onclick="showStep1()">← Back</button>
+        <button class="btn btn-primary btn-large" onclick="showStep3()">Log my reaction →</button>
+      </div>
+    </div>
+
+    <!-- Step 3 -->
+    <div id="step3" class="section-card hidden">
+      <div class="section-title">
+        <span>3️⃣</span> How did I react in that moment? (you can tick more than one)
+      </div>
+      <p class="section-subtitle">
+        There’s no score here and no “good/bad parent” label. This is just to help you notice your usual patterns.
+      </p>
+
+      <div class="reaction-options" id="reactionOptions">
+        <div class="reaction-card" onclick="toggleReaction('raiseVoice', this, event)">
+          <input type="checkbox" class="reaction-checkbox" id="r_raiseVoice">
+          <label class="reaction-text" for="r_raiseVoice">
+            <span class="reaction-label-main">📢 My emotions got pretty big</span>
+            <span class="reaction-label-sub">For example: my voice got louder, I yelled, or my tone got sharp</span>
+          </label>
+        </div>
+        <div class="reaction-card" onclick="toggleReaction('threaten', this, event)">
+          <input type="checkbox" class="reaction-checkbox" id="r_threaten">
+          <label class="reaction-text" for="r_threaten">
+            <span class="reaction-label-main">⚠️ I used “If you do X, then I’ll Y” kinds of threats</span>
+            <span class="reaction-label-sub">Like: “If you don’t stop crying, we’re not going out”, “If you don’t listen, I’ll take your toys away”</span>
+          </label>
+        </div>
+        <div class="reaction-card" onclick="toggleReaction('giveUp', this, event)">
+          <input type="checkbox" class="reaction-checkbox" id="r_giveUp">
+          <label class="reaction-text" for="r_giveUp">
+            <span class="reaction-label-main">🤷 I ended up giving in / dropping my boundary</span>
+            <span class="reaction-label-sub">Like: “Whatever, do what you want” or “Fine, I’ll just say yes and deal with it later”</span>
+          </label>
+        </div>
+        <div class="reaction-card" onclick="toggleReaction('cold', this, event)">
+          <input type="checkbox" class="reaction-checkbox" id="r_cold">
+          <label class="reaction-text" for="r_cold">
+            <span class="reaction-label-main">🧊 I pulled back and stopped engaging for a while</span>
+            <span class="reaction-label-sub">Like: ignoring them on purpose, going silent, needing distance before I could talk</span>
+          </label>
+        </div>
+        <div class="reaction-card" onclick="toggleReaction('compare', this, event)">
+          <input type="checkbox" class="reaction-checkbox" id="r_compare">
+          <label class="reaction-text" for="r_compare">
+            <span class="reaction-label-main">👥 I compared them to someone else</span>
+            <span class="reaction-label-sub">Like: “Look, other kids can do this”, “Your sibling doesn’t act like this”</span>
+          </label>
+        </div>
+        <div class="reaction-card" onclick="toggleReaction('label', this, event)">
+          <input type="checkbox" class="reaction-checkbox" id="r_label">
+          <label class="reaction-text" for="r_label">
+            <span class="reaction-label-main">🏷️ I used labels</span>
+            <span class="reaction-label-sub">Like: “You’re so lazy”, “You’re always like this”, “You’re impossible”</span>
+          </label>
+        </div>
+        <div class="reaction-card" onclick="toggleReaction('empathy', this, event)">
+          <input type="checkbox" class="reaction-checkbox" id="r_empathy">
+          <label class="reaction-text" for="r_empathy">
+            <span class="reaction-label-main">💙 I named their feelings first</span>
+            <span class="reaction-label-sub">Like: “You’re really mad right now, huh?”, “You’re actually really sad about this”</span>
+          </label>
+        </div>
+        <div class="reaction-card" onclick="toggleReaction('boundary', this, event)">
+          <input type="checkbox" class="reaction-checkbox" id="r_boundary">
+          <label class="reaction-text" for="r_boundary">
+            <span class="reaction-label-main">🎯 I set a kind but firm boundary</span>
+            <span class="reaction-label-sub">Like: “I know you don’t want to, and we still need to…”, “I get it, and the answer is still no”</span>
+          </label>
+        </div>
+        <div class="reaction-card" onclick="toggleReaction('repair', this, event)">
+          <input type="checkbox" class="reaction-checkbox" id="r_repair">
+          <label class="reaction-text" for="r_repair">
+            <span class="reaction-label-main">🤝 I tried to repair afterwards</span>
+            <span class="reaction-label-sub">For example: apologising, offering a hug, talking things through after we both cooled off</span>
+          </label>
+        </div>
+        <div class="reaction-card" onclick="toggleReaction('tiredBlank', this, event)">
+          <input type="checkbox" class="reaction-checkbox" id="r_tiredBlank">
+          <label class="reaction-text" for="r_tiredBlank">
+            <span class="reaction-label-main">😵 I was exhausted and my brain went blank</span>
+            <span class="reaction-label-sub">In that moment I just wanted it to be over, and had no energy left to think or be “intentional”</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="button-row">
+        <button class="btn btn-secondary" onclick="showStep2()">← Back</button>
+        <button class="btn btn-primary btn-large" onclick="goToNote()">Done → See today’s note</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab 2: Note -->
+  <div id="noteTab" class="tab-content">
+    <div class="section-card">
+      <div class="section-title">
+        <span>📝</span> Today’s parenting note
+      </div>
+      
+      <p style="color: #666; margin-bottom: 15px;">
+        This note is auto-generated based on what you just chose. You can copy it into your notes app, a message to your partner, or wherever you like — treat it as your “practice log”.
+      </p>
+
+      <div class="note-box" id="noteBox">
+        <span class="note-placeholder">After you finish the 3 steps on the left, a short reflection will show up here.</span>
+      </div>
+
+      <!-- Encouragement section -->
+      <div id="encouragementSection"></div>
+
+      <div class="button-row">
+        <button class="btn btn-primary" onclick="regenerateNote()">🔄 Regenerate note</button>
+        <button class="btn btn-secondary" onclick="copyNote()">📋 Copy text</button>
+      </div>
+      <div id="copyHint" class="copy-hint"></div>
+    </div>
+
+    <div class="section-card" style="background: #e8f5e9; border-left: 5px solid #4caf50;">
+      <div class="section-title" style="color: #2e7d32;">
+        <span>💡</span> Gentle reminders
+      </div>
+      <ul style="padding-left: 25px; line-height: 1.8; color: #444; font-size: 0.95em;">
+        <li>You don’t have to handle every single situation perfectly. What matters more is that you pause and look at “what actually just happened”.</li>
+        <li>Looking back about once a week, you’ll start to notice: you’re not parenting the way you used to.</li>
+        <li>You can also share these notes with your partner and turn them into “tiny agreements” between you two.</li>
+      </ul>
+    </div>
+
+    <!-- References (APA 7th) -->
+    <div class="reference-section">
+      <div class="reference-title">
+        <span>📚</span> Research and books behind this tool
+      </div>
+      <div class="reference-list">
+        <div class="reference-item">
+          Cooper, G., Hoffman, K., Powell, B., &amp; Marvin, R. (2005). The Circle of Security intervention: Differential diagnosis and differential treatment. In L. J. Berlin, Y. Ziv, L. Amaya-Jackson, &amp; M. T. Greenberg (Eds.), <i>Enhancing early attachments: Theory, research, intervention, and policy</i> (pp. 127–151). Guilford Press.
+        </div>
+        <div class="reference-item">
+          Faber, A., &amp; Mazlish, E. (2012). <i>How to talk so kids will listen &amp; listen so kids will talk</i>. Scribner. (Original work published 1980)
+        </div>
+        <div class="reference-item">
+          Gottman, J. M., Katz, L. F., &amp; Hooven, C. (1997). <i>Meta-emotion: How families communicate emotionally</i>. Lawrence Erlbaum Associates.
+        </div>
+        <div class="reference-item">
+          Kennedy-Moore, E., &amp; Lowenthal, M. S. (2011). <i>Smart parenting for smart kids: Nurturing your child's true potential</i>. Jossey-Bass.
+        </div>
+        <div class="reference-item">
+          Neff, K. D., &amp; Faso, D. J. (2015). Self-compassion and well-being in parents of children with autism. <i>Mindfulness, 6</i>(4), 938–947. https://doi.org/10.1007/s12671-014-0322-0
+        </div>
+        <div class="reference-item">
+          Siegel, D. J., &amp; Bryson, T. P. (2011). <i>The whole-brain child: 12 revolutionary strategies to nurture your child's developing mind</i>. Delacorte Press.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab 3: Weekly review -->
+  <div id="historyTab" class="tab-content">
+    <div class="section-card">
+      <div class="section-title">
+        <span>📊</span> Last 7 days snapshot
+      </div>
+
+      <div id="historySummary" class="history-summary hidden"></div>
+      
+      <div id="historyList">
+        <div class="empty-history">
+          <div class="empty-history-icon">📭</div>
+          <p>No entries yet. Once you complete a translation, it’ll show up here.</p>
+          <p style="font-size: 0.9em; color: #999; margin-top: 8px;">You can start with just one moment that stood out today.</p>
+        </div>
+      </div>
+
+      <div class="button-row" style="margin-top: 10%;">
+        <button class="btn btn-danger" onclick="clearAllRecords()">🧹 Clear all saved records</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // === Scenario templates (age-based) ===
+  const scenarioTemplates = {
+    separation: {
+      name: 'Doesn’t want to go to school / separation struggle',
+      icon: '🏫',
+      ageVariants: {
+        toddler: {
+          emotions: [
+            { emoji: '😨', text: 'Scared you might disappear once you leave', keywords: ['cry', 'hug', 'hold on', 'mom', 'dad'], phrase: '“Are you scared that once mommy leaves, you might never see me again?”' },
+            { emoji: '😢', text: 'Doesn’t really understand why you have to separate', keywords: ['why', 'don’t want', 'no'], phrase: '“It kind of makes no sense to you that we have to be apart, it just feels awful.”' },
+            { emoji: '😰', text: 'Feels nervous around unfamiliar people', keywords: ['stranger', 'don’t know', 'new'], phrase: '“There are a lot of people here you don’t really know, and that makes you feel a bit scared.”' }
+          ],
+          needs: [
+            { emoji: '🛡️', text: 'To be held and soothed physically', keywords: ['hug', 'cry', 'cling'], phrase: 'Extra cuddles first, so their body can feel safe before we talk.' },
+            { emoji: '💕', text: 'To hear again and again that you’ll come back', keywords: ['back', 'pick up', 'come'], phrase: 'You can calmly repeat: “Mommy will definitely come back to pick you up.”' },
+            { emoji: '🎯', text: 'A simple, predictable goodbye ritual', keywords: ['bye', 'wave', 'go'], phrase: 'For example: hug + high five + “See you later” every time you say goodbye.' }
+          ],
+          responses: [
+            { main: 'Start with comfort in their body, then explain you’re coming back.', say: '“Let me give you a big hug first. I need to go to work for a bit, and I’ll be back before the sun goes down.”' },
+            { main: 'Make the time you’ll return feel more “visible”.', say: '“When the clock hand moves to here, I’ll be standing right at the door. You can count in your head if you want.”' },
+            { main: 'Create a simple goodbye ritual you both repeat.', say: '“Let’s do our three high-fives and say ‘See you soon’, then I’ll head out, okay?”' }
+          ]
+        },
+        preschool: {
+          emotions: [
+            { emoji: '😨', text: 'Worried you might forget to pick them up', keywords: ['pick up', 'come back', 'forget', 'will you'], phrase: '“Are you wondering, ‘What if no one comes to pick me up?’”' },
+            { emoji: '😢', text: 'Doesn’t want to leave the comfort of home', keywords: ['don’t want', 'home', 'leave'], phrase: '“Home feels really cozy and safe, so it’s hard to leave all of a sudden.”' },
+            { emoji: '😰', text: 'Just nervous about separation itself', keywords: ['nervous', 'don’t want to go', 'scared'], phrase: '“Saying goodbye and being away from mom or dad makes your whole body tense up.”' }
+          ],
+          needs: [
+            { emoji: '🛡️', text: 'A clear sense of when exactly you’ll see each other again', keywords: ['when', 'how long', 'what time'], phrase: 'Use simple time + place, like “after snack time I’ll be at the gate”.' },
+            { emoji: '💕', text: 'To bring a small “piece of you” with them', keywords: ['bring', 'take', 'thing'], phrase: 'Maybe a small handkerchief, photo, or tiny item that reminds them of you.' },
+            { emoji: '📅', text: 'A less rushed morning routine', keywords: ['rushed', 'late', 'hurry'], phrase: 'A bit of margin so it’s not only “we’re late, hurry up!”, but some actual connection time.' }
+          ],
+          responses: [
+            { main: 'Name their mix of “not wanting to go” and nervousness.', say: '“You feel both sad to leave and a bit nervous inside, that’s a lot of big feelings.”' },
+            { main: 'Offer something small they can take as a comfort object.', say: '“Do you want to bring my little handkerchief or this tiny toy with you? It can keep you company until I’m back.”' },
+            { main: 'Make a very specific plan about pickup.', say: '“When the big clock says 3 o’clock, I’ll be waiting right by the door. Let’s pinky promise.”' }
+          ]
+        },
+        school: {
+          emotions: [
+            { emoji: '😟', text: 'Worried about getting along with classmates', keywords: ['friend', 'classmate', 'don’t like', 'left out'], phrase: '“Is it kind of awkward or hard with some classmates lately?”' },
+            { emoji: '😔', text: 'Feeling pressure from homework or tests', keywords: ['homework', 'test', 'can’t do it', 'study'], phrase: '“All the homework and tests feel like too much, like you can barely keep up.”' },
+            { emoji: '😤', text: 'Frustrated that they “have to” go to school', keywords: ['why', 'don’t want to go', 'hate'], phrase: '“You might be thinking: Why do I have to go every single day? It’s so annoying.”' }
+          ],
+          needs: [
+            { emoji: '👂', text: 'Someone to actually hear “what’s been going on”', keywords: ['happened', 'teacher said', 'classmate'], phrase: 'A safe time to talk without being rushed or lectured.' },
+            { emoji: '🎯', text: 'Help with real problems, not just “try harder”', keywords: ['what do I do', 'always', 'hard'], phrase: 'Practical ideas together work better than “you just need to work harder”.' },
+            { emoji: '⚖️', text: 'To be seen as “not lazy, just overwhelmed”', keywords: ['hard', 'can’t', 'trying'], phrase: 'They want you to notice how much they’re already trying, not just the results.' }
+          ],
+          responses: [
+            { main: 'Invite them to tell you what’s been happening instead of jumping to advice.', say: '“Has something been going on lately that makes you really not want to go? I’d like to hear about it.”' },
+            { main: 'Say out loud that you want to problem-solve together.', say: '“If your classmates keep doing this, what are some things we could try? Let’s think of three options together.”' },
+            { main: 'Acknowledge their pressure and effort.', say: '“There’s a lot of hard work on your plate, and I can see you’ve been hanging in there.”' }
+          ]
+        }
+      }
+    },
+    public_tantrum: {
+      name: 'Meltdown in public',
+      icon: '🛒',
+      ageVariants: {
+        toddler: {
+          emotions: [
+            { emoji: '😠', text: 'Sees something and feels they absolutely need it now', keywords: ['want', 'take', 'buy', 'give me'], phrase: '“When you saw that thing, you felt like you just had to have it right now.”' },
+            { emoji: '😤', text: 'Can’t understand why they’re not allowed', keywords: ['why', 'no', 'not allowed'], phrase: '“You’re thinking: Why can’t I have it? I don’t get it, I just feel mad.”' },
+            { emoji: '😫', text: 'Too tired / hungry / overstimulated', keywords: ['tired', 'hungry', 'too many people', 'loud'], phrase: '“There are lots of sounds, people, and you’re also tired, so your feelings just explode.”' }
+          ],
+          needs: [
+            { emoji: '🍼', text: 'Basic needs checked first (hungry / thirsty / tired)', keywords: ['hungry', 'thirsty', 'tired', 'sleepy'], phrase: 'Taking care of their body first often works better than asking them to “be good”.' },
+            { emoji: '🎯', text: 'Very simple, concrete rules', keywords: ['can', 'can’t', 'rule'], phrase: 'One–two clear sentences instead of a long explanation.' },
+            { emoji: '⏰', text: 'A heads-up before leaving or changing activity', keywords: ['leave', 'go home', 'time to go'], phrase: 'Knowing “we’ll leave soon” helps more than a sudden stop.' }
+          ],
+          responses: [
+            { main: 'Check hunger / tiredness first, then talk about rules.', say: '“Are you feeling super tired or hungry right now? Let’s have a sip of water first, then we’ll talk.”' },
+            { main: 'Use one short sentence to explain why you’re not buying it today.', say: '“We’re not buying that today. We’re only getting what we need for dinner.”' },
+            { main: 'Give them a small “job” to help shift focus.', say: '“Can you help me find the red apples? You can be my special helper.”' }
+          ]
+        },
+        preschool: {
+          emotions: [
+            { emoji: '😠', text: 'Very angry about wanting something and being told no', keywords: ['want', 'buy', 'I want it'], phrase: '“You really, really want it, and hearing ‘no’ feels super unfair.”' },
+            { emoji: '😔', text: 'Feels it’s unfair and very disappointing', keywords: ['why not', 'not fair', 'unfair'], phrase: '“You’re thinking: Other kids get it, why can’t I?”' },
+            { emoji: '😤', text: 'Feels misunderstood by adults', keywords: ['you never', 'you don’t get it', 'you don’t know'], phrase: '“You feel like the grown-ups just don’t get how much this matters to you.”' }
+          ],
+          needs: [
+            { emoji: '👂', text: 'To have their “I really want this” feeling noticed', keywords: ['want', 'really want', 'I need it'], phrase: 'Hearing you say “I know you really want it” helps more than instant lectures.' },
+            { emoji: '⚖️', text: 'Clear and consistent rules', keywords: ['can I', 'why', 'rule'], phrase: 'Same basic rule most of the time feels safer than “depends on mom’s mood”.' },
+            { emoji: '🤝', text: 'To feel respected in front of other people', keywords: ['everyone', 'looking', 'others'], phrase: 'Being yelled at publicly feels very embarrassing and can make the meltdown bigger.' }
+          ],
+          responses: [
+            { main: 'Lead with empathy, not “Stop it” or “Enough”.', say: '“You loved that toy, and when I said no you felt super angry and upset.”' },
+            { main: 'Repeat the rule calmly and consistently.', say: '“I know you really want it. Today we’re only buying things for dinner, not toys.”' },
+            { main: 'Offer a bit of choice to give some control back.', say: '“It’s okay to be mad, but we can’t scream here. Do you want to hold my hand and walk, or go to a quieter spot with me?”' }
+          ]
+        },
+        school: {
+          emotions: [
+            { emoji: '😒', text: 'Thinks you’re being stingy or unfair', keywords: ['stingy', 'everyone else', 'why', 'unfair'], phrase: '“You’re thinking: Other kids have this, why is it always no for me?”' },
+            { emoji: '😤', text: 'Annoyed at being treated “like a baby”', keywords: ['I’m not', 'I’m already', 'grown up'], phrase: '“You feel like: I’m old enough, why can’t I decide this myself?”' },
+            { emoji: '😔', text: 'Genuinely really wants that thing', keywords: ['really want', 'always wanted', 'want it'], phrase: '“You’re not just being difficult. You really like this thing a lot.”' }
+          ],
+          needs: [
+            { emoji: '💰', text: 'To understand money and family budget a bit more', keywords: ['money', 'expensive', 'how much', 'budget'], phrase: 'A simple picture of how your family uses money — not just “because I said so”.' },
+            { emoji: '🎯', text: 'To be part of the decision-making sometimes', keywords: ['can I', 'if', 'talk about'], phrase: 'Being asked for their opinion and planning together increases buy-in.' },
+            { emoji: '📋', text: 'Practice delaying gratification (not “never”, just “not now”)', keywords: ['now', 'right now', 'wait'], phrase: '“Not now” can feel less harsh if they know there’s a future option.' }
+          ],
+          responses: [
+            { main: 'Open up a small “let’s talk about money” moment.', say: '“You really want this. Let’s look at how much it costs and talk about it together.”' },
+            { main: 'Explain the budget side in a simple way.', say: '“We’ve already spent this month’s extra money on other things. We can put this on our ‘maybe next month’ list.”' },
+            { main: 'Offer a concrete way they could get it later.', say: '“You could save your pocket money, or we can think about it again for your birthday or a holiday.”' }
+          ]
+        }
+      }
+    },
+    sibling_conflict: {
+      name: 'Sibling fights',
+      icon: '👧👦',
+      ageVariants: {
+        toddler: {
+          emotions: [
+            { emoji: '😡', text: 'Explodes when something gets taken away', keywords: ['grab', 'mine', 'took'], phrase: '“When your stuff gets taken, you just explode.”' },
+            { emoji: '😢', text: 'Can’t express in words yet, so they cry or hit', keywords: ['cry', 'hit', 'push'], phrase: '“Right now crying, pushing, or hitting is how you show you’re not okay.”' },
+            { emoji: '😤', text: 'Convinced it’s all the other kid’s fault', keywords: ['he', 'she', 'all', 'started'], phrase: '“You feel sure the other one is totally wrong, and you feel very hurt.”' }
+          ],
+          needs: [
+            { emoji: '🎯', text: 'Help putting their feelings into words', keywords: ['angry', 'sad', 'upset'], phrase: 'An adult who can say “You felt really mad when…” for them.' },
+            { emoji: '⚖️', text: 'To learn what “taking turns” means', keywords: ['turns', 'switch', 'wait'], phrase: 'Knowing it’s not “I always lose”, but “we take turns”.' },
+            { emoji: '🛡️', text: 'Physical safety (no hitting / pushing / biting)', keywords: ['hit', 'push', 'bite'], phrase: 'First job is to keep everyone’s bodies safe, then talk about right/wrong.' }
+          ],
+          responses: [
+            { main: 'Calmly block hitting or pushing first.', say: '“I can’t let you hit. I’m going to hold you for a moment — we can use words instead.”' },
+            { main: 'Help them describe what happened and how they felt.', say: '“You’re really mad because the blocks were in your hands and then they got taken, right?”' },
+            { main: 'Use a timer or simple turn-taking rule.', say: '“We’ll use a timer — 5 minutes for big brother, then 5 minutes for you.”' }
+          ]
+        },
+        preschool: {
+          emotions: [
+            { emoji: '😡', text: 'Gets very mad when things are grabbed', keywords: ['grab', 'took', 'mine'], phrase: '“When your stuff gets grabbed, you feel super mad.”' },
+            { emoji: '😒', text: 'Jealous, feels things are unfair', keywords: ['favour', 'always', 'not fair'], phrase: '“You secretly wonder: Do mom and dad like them more?”' },
+            { emoji: '😞', text: 'Feels less important than their sibling', keywords: ['don’t love me', 'like them more', 'always'], phrase: '“You’re scared you might be the less-loved kid, so you’re extra sensitive.”' }
+          ],
+          needs: [
+            { emoji: '⚖️', text: 'To feel they’re treated fairly', keywords: ['fair', 'same', 'why'], phrase: 'Doesn’t have to be exactly equal every time, but they need to feel considered.' },
+            { emoji: '👁️', text: 'To have their side of the story heard', keywords: ['they started', 'but', 'I'], phrase: 'A chance to explain without always being told to “just be the bigger one”.' },
+            { emoji: '🎯', text: 'To learn how to take turns or work things out', keywords: ['my turn', 'take turns', 'together'], phrase: 'Tools for “how to share” instead of only “don’t fight”.' }
+          ],
+          responses: [
+            { main: 'Say out loud both kids’ feelings first.', say: '“You’re really mad it got taken away; and you feel upset because you never get a turn.”' },
+            { main: 'Describe what happened before deciding who’s right.', say: '“The toy was in your hands first, then it got taken without asking.”' },
+            { main: 'Brainstorm turn-taking or playing together.', say: '“Do you want to take turns, or build something together? Let’s try a couple of ideas.”' }
+          ]
+        },
+        school: {
+          emotions: [
+            { emoji: '😤', text: 'Thinks their sibling is annoying or childish', keywords: ['annoying', 'babyish', 'hate', 'loud'], phrase: '“You feel like they’re always bugging you when you just want to do your own thing.”' },
+            { emoji: '😒', text: 'Feels you’re biased or unfair', keywords: ['favour', 'always me', 'why me', 'unfair'], phrase: '“You’re thinking: Whenever something happens, I’m the one who gets blamed.”' },
+            { emoji: '😔', text: 'Feels their space and things get invaded', keywords: ['mine', 'room', 'stuff', 'privacy'], phrase: '“You have your own space and things, and when people barge in or touch them, it feels really bad.”' }
+          ],
+          needs: [
+            { emoji: '🚪', text: 'Personal space and privacy', keywords: ['room', 'privacy', 'don’t come in', 'space'], phrase: 'A few things / areas that are “just mine” really matter at this age.' },
+            { emoji: '👂', text: 'A chance to vent about how annoying it feels', keywords: ['always', 'annoying', 'bother'], phrase: 'Not just “You’re older, deal with it,” but real listening.' },
+            { emoji: '⚖️', text: 'Fair rules (older kid doesn’t always have to give in)', keywords: ['why me', 'I always', 'they never'], phrase: 'Understanding that “fair” doesn’t mean “the older one always has to sacrifice”.' }
+          ],
+          responses: [
+            { main: 'Talk with them alone and admit it really is frustrating.', say: '“Little siblings barging in is actually pretty annoying, huh? Tell me what bugs you the most.”' },
+            { main: 'Create some basic rules about space and belongings together.', say: '“Let’s set some rules: knock before going into your room, and ask before using each other’s things.”' },
+            { main: 'Don’t force “being nice”, just insist on respectful behaviour.', say: '“It’s your choice whether or not to share your stuff. What’s not okay is yelling or name-calling.”' }
+          ]
+        }
+      }
+    },
+    bedtime: {
+      name: 'Refusing bedtime',
+      icon: '🌙',
+      ageVariants: {
+        toddler: {
+          emotions: [
+            { emoji: '😣', text: 'Doesn’t want the fun to stop', keywords: ['more', 'again', 'play', 'no'], phrase: '“You were having so much fun, and suddenly you’re told to stop. Of course you don’t like that.”' },
+            { emoji: '😨', text: 'Feels a bit scared of the dark', keywords: ['dark', 'light', 'stay', 'alone'], phrase: '“When the lights go off and it gets quiet, it feels a bit scary.”' },
+            { emoji: '😫', text: 'Too wound up, brain can’t slow down', keywords: ['don’t want to sleep', 'not tired', 'not sleepy'], phrase: '“Your body is tired, but your brain is still running fast.”' }
+          ],
+          needs: [
+            { emoji: '🔄', text: 'A predictable bedtime routine', keywords: ['when', 'bedtime', 'routine'], phrase: 'The same simple steps every night so their brain knows “sleep is coming”.' },
+            { emoji: '💗', text: 'Soothing and close contact', keywords: ['stay', 'with me', 'hug'], phrase: 'Someone nearby so their body can relax more easily.' },
+            { emoji: '🌙', text: 'A calmer, dimmer environment', keywords: ['light', 'noise', 'bright'], phrase: 'Lights and sounds down first, then the feelings can settle.' }
+          ],
+          responses: [
+            { main: 'Create a simple, repeatable bedtime ritual.', say: '“Every night we do this: bath, brush teeth, one story, big hug, then lights out.”' },
+            { main: 'Lessen the fear of darkness by staying close at first.', say: '“I’ll lie next to you until you fall asleep, then I’ll go to the living room. When you wake up, I’ll be here again.”' },
+            { main: 'Tweak the room lighting and background noise.', say: '“We’ll leave a small night light on and play soft music so you can feel safer.”' }
+          ]
+        },
+        preschool: {
+          emotions: [
+            { emoji: '😣', text: 'Hates stopping playtime', keywords: ['keep playing', 'one more', 'play', 'don’t want'], phrase: '“You think: Just a bit more, please! It’s so hard to stop when you’re having fun.”' },
+            { emoji: '😴', text: 'Thinks sleep is boring compared to fun stuff', keywords: ['don’t want to sleep', 'boring', 'still want'], phrase: '“Compared to toys or stories, going to bed feels really boring.”' },
+            { emoji: '😨', text: 'Worried about the dark or bad dreams', keywords: ['dark', 'nightmare', 'dream', 'scared'], phrase: '“Sometimes you have weird or scary dreams, so closing your eyes feels a bit scary.”' }
+          ],
+          needs: [
+            { emoji: '🔄', text: 'A routine that clearly signals “this is the end of the day”', keywords: ['routine', 'order', 'every day'], phrase: 'A steady bedtime flow helps the brain switch from “play mode” to “rest mode”.' },
+            { emoji: '💗', text: 'Some special 1:1 time before sleep', keywords: ['stay', 'talk', 'chat'], phrase: 'A short slice of time where the adult is just with them.' },
+            { emoji: '🛡️', text: 'Reassurance that you’re still around while they sleep', keywords: ['where will you be', 'will you', 'are you'], phrase: 'Knowing where you’ll be once they fall asleep reduces anxiety.' }
+          ],
+          responses: [
+            { main: 'Acknowledge that stopping is hard when they’re into something.', say: '“You were really into your game, so of course it feels bad to stop and go to bed.”' },
+            { main: 'Keep a consistent “wind down” routine.', say: '“We’ll brush your teeth, pick one story, read it, then lights out and a goodnight hug.”' },
+            { main: 'Be clear about where you’ll be.', say: '“When you’re sleeping, I’ll be in the living room. When you wake up in the morning, you’ll see me right away.”' }
+          ]
+        },
+        school: {
+          emotions: [
+            { emoji: '😤', text: 'Feels not tired and doesn’t like being told what to do', keywords: ['not tired', 'don’t want to sleep', 'still', 'no'], phrase: '“You think: I’m not even sleepy yet, why are you controlling me?”' },
+            { emoji: '📱', text: 'Wants more screen time or to keep reading / doing something', keywords: ['phone', 'book', 'watch', 'tablet'], phrase: '“Your mind is still inside the show, game, or story, so it’s hard to shut it off.”' },
+            { emoji: '😟', text: 'Lies in bed and starts overthinking', keywords: ['can’t sleep', 'keep thinking', 'worried'], phrase: '“Once you lie down, your brain starts spinning with all sorts of thoughts.”' }
+          ],
+          needs: [
+            { emoji: '⏰', text: 'A negotiated bedtime they can accept', keywords: ['what time', 'too early', 'late'], phrase: 'A rough time window that feels somewhat fair to both of you.' },
+            { emoji: '📵', text: 'No screens for about an hour before bed', keywords: ['phone', 'tablet', 'screen'], phrase: 'Some non-screen wind-down so their brain can slow itself down.' },
+            { emoji: '💭', text: 'Space to talk through worries if anxiety shows up at night', keywords: ['worried', 'scared', 'tomorrow', 'stress'], phrase: 'Someone willing to hear “what’s spinning in your head” before sleep.' }
+          ],
+          responses: [
+            { main: 'Collaborate on a reasonable bedtime.', say: '“You’ve got to wake up early tomorrow. I’m thinking lights out around 9:30 — how does that sound? We can adjust a bit together.”' },
+            { main: 'Set a family rule about screen-free time before bed.', say: '“After 9pm, phones stay in the living room. You can read or draw instead.”' },
+            { main: 'Create a tiny “worry time” before sleep.', say: '“When you lie down, what does your brain keep thinking about? Want to spend 5 minutes talking it out with me?”' }
+          ]
+        }
+      }
+    },
+    transition: {
+      name: 'Doesn’t want to clean up / transition',
+      icon: '⏱️',
+      ageVariants: {
+        toddler: {
+          emotions: [
+            { emoji: '😤', text: 'Gets mad when interrupted', keywords: ['more', 'no', 'still playing'], phrase: '“You’re right in the middle of something, and being told to stop makes you mad.”' },
+            { emoji: '😫', text: 'Feels cleaning is boring and tiring', keywords: ['don’t want', 'tired', 'no'], phrase: '“Cleaning up feels like a lot of work and not fun at all.”' },
+            { emoji: '😕', text: 'Doesn’t know how or where to start', keywords: ['don’t know', 'how', 'where'], phrase: '“You’re not sure where things go, so you just stall.”' }
+          ],
+          needs: [
+            { emoji: '🎯', text: 'An adult to show them how to clean up', keywords: ['how', 'where', 'put'], phrase: 'Someone to point: “This goes here, that goes there.”' },
+            { emoji: '👐', text: 'You cleaning together with them', keywords: ['help', 'together', 'stay'], phrase: 'At this age, “let’s do it together” works better than “go do it alone”.' },
+            { emoji: '🎵', text: 'Turning cleanup into a little game', keywords: ['play', 'game', 'song'], phrase: 'Songs, timers, or playful challenges help a lot.' }
+          ],
+          responses: [
+            { main: 'Use “we” instead of “you go do it”.', say: '“Let’s clean up together. You pick up the red blocks, I’ll grab the blue ones. Let’s see who’s faster.”' },
+            { main: 'Make cleanup a quick game.', say: '“We’ll sing the clean-up song, and when the song ends, let’s see how much we’ve cleared.”' },
+            { main: 'Give very specific instructions.', say: '“Blocks go in this box, cars go in that basket.”' }
+          ]
+        },
+        preschool: {
+          emotions: [
+            { emoji: '😤', text: 'Annoyed at being suddenly cut off', keywords: ['still playing', 'wait', 'suddenly', 'more'], phrase: '“You were focused on your play, and being told to stop feels annoying.”' },
+            { emoji: '😑', text: 'Feels they have no choice in the matter', keywords: ['why', 'don’t want', 'have to'], phrase: '“You feel like everything is decided for you and you never get a say.”' },
+            { emoji: '😰', text: 'Feels pressured when rushed to clean up', keywords: ['hurry', 'quick', 'faster', 'keep saying'], phrase: '“Being told ‘Hurry up!’ over and over makes your body tense and stuck.”' }
+          ],
+          needs: [
+            { emoji: '⏰', text: 'A little warning before transitions', keywords: ['suddenly', 'right now', 'wait'], phrase: 'A 5-minute heads-up before clean-up time.' },
+            { emoji: '🎛️', text: 'Some sense of choice and control', keywords: ['I want', 'can I', 'choose'], phrase: 'They can choose what to start with or who cleans up what.' },
+            { emoji: '📋', text: 'Breaking the task into smaller steps', keywords: ['how', 'don’t know', 'too much'], phrase: 'Smaller chunks make it feel less overwhelming.' }
+          ],
+          responses: [
+            { main: 'Give a simple heads-up instead of a sudden command.', say: '“You can play for 5 more minutes. When the timer rings, we’ll clean up together.”' },
+            { main: 'Break it down into one step at a time.', say: '“First, let’s put the blocks back in their box. After that, we’ll tackle the toy cars on the floor, okay?”' },
+            { main: 'Notice their focus and frustration.', say: '“You were really into building that, so of course being told to stop feels frustrating.”' }
+          ]
+        },
+        school: {
+          emotions: [
+            { emoji: '😤', text: 'Feels nagged all the time', keywords: ['I know', 'so annoying', 'always', 'nag'], phrase: '“You think: I heard you the first time, why do you keep repeating it?”' },
+            { emoji: '😑', text: 'Thinks “Why is it always my job?”', keywords: ['why me', 'my brother', 'my sister', 'I have to'], phrase: '“You feel like everyone uses the stuff, but you’re the only one being told to clean.”' },
+            { emoji: '📱', text: 'Wants to finish what they’re doing first', keywords: ['wait', 'after this', 'let me finish'], phrase: '“Your mind is still on your show/game/homework, not on cleaning up yet.”' }
+          ],
+          needs: [
+            { emoji: '⏰', text: 'A chance to plan their own cleanup time', keywords: ['later', 'what time', 'I know', 'I will'], phrase: 'Some say in “what time before X” they’ll do it.' },
+            { emoji: '⚖️', text: 'Clear and fair division of chores', keywords: ['why only me', 'they never', 'fair'], phrase: 'Understanding that everyone has responsibilities, not just them.' },
+            { emoji: '🎯', text: 'To understand why cleaning matters', keywords: ['why', 'not necessary', 'have to'], phrase: 'Not only “because I said so”, but real reasons like safety and finding things.' }
+          ],
+          responses: [
+            { main: 'Offer a time window instead of “right now or else”.', say: '“As long as it’s done before dinner, it’s okay. Do you want to do it now, or at 6 o’clock?”' },
+            { main: 'Explain the “why” behind cleaning.', say: '“If things are put away, nobody trips and gets hurt, and next time you can find your stuff faster.”' },
+            { main: 'Talk through the family’s division of chores.', say: '“How do you think we should divide jobs fairly at home? Let’s lay it out together.”' }
+          ]
+        }
+      }
+    },
+    mealtime: {
+      name: 'Mealtime battles',
+      icon: '🍽️',
+      ageVariants: {
+        toddler: {
+          emotions: [
+            { emoji: '😐', text: 'Not very interested in the food', keywords: ['no eat', 'don’t want', 'no food'], phrase: '“The food on the table just doesn’t look that exciting to you.”' },
+            { emoji: '😏', text: 'Playing with food is more fun than eating it', keywords: ['play', 'throw', 'mess'], phrase: '“It’s more fun to play with your food than to put it in your tummy.”' },
+            { emoji: '😣', text: 'Maybe not hungry, or full from snacks', keywords: ['not hungry', 'full', 'snack'], phrase: '“You might already feel kind of full, so you’re not that into eating right now.”' }
+          ],
+          needs: [
+            { emoji: '🍼', text: 'Possibly fewer snacks before meals', keywords: ['snack', 'cookie', 'cracker', 'eat'], phrase: 'Take a look at how many snacks they’ve had before expecting a big meal.' },
+            { emoji: '🎮', text: 'A less distracting eating environment', keywords: ['TV', 'toy', 'phone'], phrase: 'Fewer distractions makes it easier to focus on eating.' },
+            { emoji: '⏰', text: 'Somewhat regular meal times', keywords: ['time', 'when', 'clock'], phrase: 'Roughly fixed mealtimes help their body learn the rhythm.' }
+          ],
+          responses: [
+            { main: 'First, check if snacks have filled them up.', say: '“Did you have some crackers just now? That might be why you don’t feel hungry.”' },
+            { main: 'Turn off or put away distractions.', say: '“During meals, the toys and TV can rest. When we’re done, we can play again.”' },
+            { main: 'Set a calm but clear time limit for meals.', say: '“We’ll sit and eat for about 20 minutes. After that, we’ll clear the table, and if you’re hungry later, you can wait for the next meal.”' }
+          ]
+        },
+        preschool: {
+          emotions: [
+            { emoji: '😐', text: 'Not into certain foods / not very hungry', keywords: ['don’t want to eat', 'yucky', 'not hungry'], phrase: '“Some of these foods just don’t look that appealing to you.”' },
+            { emoji: '😏', text: 'Would rather keep playing or watching something', keywords: ['play', 'watch', 'want to', 'do'], phrase: '“You’d much rather get back to playing or watching than sit and eat.”' },
+            { emoji: '😣', text: 'Feels pressured by constant reminders', keywords: ['hurry', 'faster', 'come on'], phrase: '“Hearing ‘Come on, hurry up’ again and again makes you want to eat even less.”' }
+          ],
+          needs: [
+            { emoji: '🎮', text: 'A mealtime that’s mostly about eating, not multitasking', keywords: ['TV', 'toy', 'distracted'], phrase: 'Keeping screens and toys away during meals helps them tune in to their body.' },
+            { emoji: '⏱️', text: 'A reasonable amount of time to eat', keywords: ['too long', 'sit', 'forever'], phrase: 'Not sitting forever, but enough time to actually eat.' },
+            { emoji: '🍴', text: 'Respect for “I’m full” cues', keywords: ['full', 'can’t eat', 'not hungry'], phrase: 'Being allowed to say “I’m full” and be believed, within reason.' }
+          ],
+          responses: [
+            { main: 'Describe what you notice instead of blaming.', say: '“I notice you’re eating really slowly. Are you not very hungry, or not really liking this dish?”' },
+            { main: 'Adjust portions to set them up for success.', say: '“This might be too much for you. Let’s start with a smaller amount — it feels good to finish what’s on the plate.”' },
+            { main: 'Have a calm, consistent rule about mealtime.', say: '“We’ll sit at the table and focus on eating for about 20 minutes. After that we’ll clean up, whether the plate is finished or not.”' }
+          ]
+        },
+        school: {
+          emotions: [
+            { emoji: '😐', text: 'Really dislikes certain foods', keywords: ['hate', 'don’t like', 'gross'], phrase: '“You honestly don’t like some of these foods, not just being picky on purpose.”' },
+            { emoji: '📱', text: 'Wants to eat with a screen or entertainment', keywords: ['phone', 'video', 'watch', 'tablet'], phrase: '“Eating without a screen feels boring to you.”' },
+            { emoji: '😤', text: 'Feels forced or controlled around eating', keywords: ['have to', 'force', 'make me'], phrase: '“You feel like: Why are you forcing me to finish everything?”' }
+          ],
+          needs: [
+            { emoji: '🗣️', text: 'A say in what meals are like sometimes', keywords: ['don’t like', 'I want', 'choose'], phrase: 'A chance to share preferences and help plan meals.' },
+            { emoji: '⚖️', text: 'To understand nutrition in a simple way', keywords: ['why', 'healthy', 'unhealthy'], phrase: 'Knowing what different foods do for their body.' },
+            { emoji: '📵', text: 'Mealtimes that feel like family time, not performance time', keywords: ['eat together', 'talk', 'family'], phrase: 'Feeling like meals are for connection, not just “eat and be judged”.' }
+          ],
+          responses: [
+            { main: 'Invite them to help plan some meals for the week.', say: '“What are a few things you’d love to eat this week? Let’s add them into our plan.”' },
+            { main: 'Explain nutrition in a non-scary, non-shaming way.', say: '“Your body needs a bit of everything — some veggies, some protein, some carbs — so it has enough power for the day.”' },
+            { main: 'Make meals a time to connect, not just monitor.', say: '“During meals, let’s put our phones aside and just eat and talk about our day.”' }
+          ]
+        }
+      }
+    },
+    other: {
+      name: 'Hard to describe, just a rough day',
+      icon: '😵',
+      ageVariants: {
+        toddler: {
+          emotions: [
+            { emoji: '😫', text: 'Lots of little things felt “off” today', keywords: [], phrase: '“So many things didn’t go your way today, and crying or yelling is how your body lets it out.”' },
+            { emoji: '😵', text: 'Too many sounds, people, or changes', keywords: [], phrase: '“There were just too many people, noises, and things going on. It all felt like too much.”' },
+            { emoji: '😢', text: 'Feels bad but has no words for it', keywords: [], phrase: '“You just know you feel bad inside, but you don’t know how to say it with words yet.”' }
+          ],
+          needs: [
+            { emoji: '👐', text: 'A safe place where it’s okay to fall apart', keywords: [], phrase: 'A grown-up who can stay nearby while they cry, without expecting “good behaviour” right away.' },
+            { emoji: '💗', text: 'To hear “your big feelings are allowed here”', keywords: [], phrase: 'Knowing that their sadness or anger won’t make you leave.' },
+            { emoji: '⏸️', text: 'A slower pace and fewer demands for the rest of the day', keywords: [], phrase: 'Less doing, more resting, so their nervous system can reset a bit.' }
+          ],
+          responses: [
+            { main: 'Offer a safe space to fall apart.', say: '“Today was really a lot for you. I’m here with you. It’s okay to cry or be mad — I’ll stay.”' },
+            { main: 'Normalize their meltdown instead of shaming it.', say: '“You’re crying so hard because today was just really hard. It’s okay. I see how tired you are.”' },
+            { main: 'Lower expectations for the rest of the day.', say: '“Let’s keep the rest of today simple and quiet. We can talk about other stuff another day.”' }
+          ]
+        },
+        preschool: {
+          emotions: [
+            { emoji: '😩', text: 'Feels like the whole day has been tiring and annoying', keywords: [], phrase: '“You’re thinking: Everything today has been kind of awful.”' },
+            { emoji: '😢', text: 'A lot of little hurts piling up', keywords: [], phrase: '“Maybe lots of small disappointments have stacked up inside.”' },
+            { emoji: '😤', text: 'Doesn’t know how to explain, so it comes out as yelling', keywords: [], phrase: '“You don’t know what to say, so it all comes out as shouting or crying.”' }
+          ],
+          needs: [
+            { emoji: '👂', text: 'A pair of ears that just listen, without jumping in to correct', keywords: [], phrase: 'Someone who can listen first, not immediately judge or fix.' },
+            { emoji: '🤗', text: 'Some extra hugs and comfort', keywords: [], phrase: 'Being held or gently touched can be very regulating.' },
+            { emoji: '🧸', text: 'A soft “just for me” time', keywords: [], phrase: 'A small pocket of time where you do something gentle together that they choose.' }
+          ],
+          responses: [
+            { main: 'Acknowledge that today was hard for both of you.', say: '“I think today has been really tiring for you too. So many things happened, so now even a small thing can feel huge.”' },
+            { main: 'Make “I’ll just listen” your main goal today.', say: '“Tell me one thing that made you the most mad or sad today. I’ll just listen and won’t scold you.”' },
+            { main: 'Offer a small slice of one-on-one time.', say: '“Let’s have 10 minutes that are just you and me, doing something you choose. Everything else can wait.”' }
+          ]
+        },
+        school: {
+          emotions: [
+            { emoji: '😵', text: 'Feels completely overloaded, like today was just too much', keywords: [], phrase: '“You might feel like today was just really hard to survive.”' },
+            { emoji: '😔', text: 'Has things they don’t want to talk about yet', keywords: [], phrase: '“There are things you don’t really want to talk about, so you just carry them around inside.”' },
+            { emoji: '😤', text: 'Wants to be understood but expects a lecture if they open up', keywords: [], phrase: '“You’d like to be understood, but you’re scared that if you talk, you’ll just get a lecture.”' }
+          ],
+          needs: [
+            { emoji: '🛟', text: 'Someone to say “I see that you’re having a hard time”', keywords: [], phrase: 'To hear that their struggle is noticed, not minimized.' },
+            { emoji: '🕰️', text: 'Some alone time / downtime after a hard day', keywords: [], phrase: 'Not being grilled about homework or chores the second they walk in.' },
+            { emoji: '👂', text: 'A space to talk without being judged or “fixed” right away', keywords: [], phrase: 'A conversation where their feelings are allowed, even if you don’t agree with every detail.' }
+          ],
+          responses: [
+            { main: 'Say out loud that today seems really hard for them.', say: '“Looks like today has been pretty rough for you. I’m guessing you’re wiped out inside.”' },
+            { main: 'Offer some quiet time before expecting anything else.', say: '“Do you want some time alone first? When you’re ready, you can come find me — I’ll be here.”' },
+            { main: 'Promise a no-lecture conversation.', say: '“If you ever feel like venting about today, I can just listen without giving a speech. We can do that if you want.”' }
+          ]
+        }
+      }
+    }
+  };
+
+  // === Encouragement messages for parents ===
+  const encouragementMessages = {
+    raiseVoice: 'The fact that you’re willing to write this down means you really care about the relationship. Most parents raise their voice when they’re tired and overwhelmed — you’re far from alone. Next time, you could experiment with taking 3 slow breaths before saying the first sentence.',
+    threaten: 'Those “If you don’t…, I’ll…” threats usually pop out when we feel desperate and powerless. Seeing this in yourself already means something in you wants to do it differently.',
+    giveUp: 'When you give in, it’s often because you’ve hit your limit, not because you’re a bad parent. It just means you also need rest and support — you’re human, not a machine.',
+    cold: 'Pulling away or going cold usually means your own feelings are overflowing too. The courage to come back later and look at it like you’re doing now is a big deal. Next time you might try, “I need a few minutes to calm down, then I’ll come talk to you.”',
+    compare: 'Comparing kids is often the language many of us grew up hearing, so it slips out easily. The moment you notice “I don’t actually want to parent like this”, that’s already the starting line of change.',
+    label: 'Labels tend to jump out when we’re at our edge and words just spill out. Being honest enough to tick this box shows a lot of self-awareness and bravery.',
+    tiredBlank: 'When you choose “I was exhausted and my brain went blank”, you’re admitting something important: you’re also a person with limits. That isn’t selfish — it’s honest, and it matters.',
+
+    empathy: 'You tried to name your child’s feelings first. That is a powerful skill. For your child, a simple “You’re really upset, huh?” can stay with them for a long time.',
+    boundary: 'You managed a kind but firm boundary — that’s much harder than either “give in” or “just be strict”. Your child can grow real safety inside these sorts of boundaries.',
+    repair: 'You went back to repair after things went sideways. For a child, this teaches “we can make up after a rupture” — often more valuable than a parent who never loses their temper.',
+
+    mixed: 'You’re seeing both “the parts that hurt” and “the parts you did well”. Holding both honestly and kindly is a very mature way to parent.',
+    allPositive: 'From today’s answers, it’s clear you’re already practising a more connected, boundary-based way of parenting. It may still feel tiring, but your relationship is being tended to, bit by bit.',
+    allNegative: 'Today might have been especially tough. No parent is endlessly calm and patient. The fact that you’re still here, reflecting and recording, says you haven’t given up on this relationship.',
+    noSelection: 'Even if you’re not sure yet how you reacted, just clicking into this tool and being willing to look at yourself and your child is already a quiet but meaningful shift.'
+  };
+
+  let currentAge = 'toddler';
+  let currentScenario = null;
+  let selectedReactions = new Set();
+  let selectedResponses = new Set();
+  let currentAnalysis = null;
+  let records = [];
+
+  // === Storage helpers ===
+  function initRecords() {
+    try {
+      const saved = localStorage.getItem('parentingRecords');
+      if (saved) {
+        records = JSON.parse(saved);
+      }
+    } catch (e) {
+      console.error('Failed to load records:', e);
+      records = [];
+    }
+  }
+
+  function saveRecords() {
+    try {
+      localStorage.setItem('parentingRecords', JSON.stringify(records));
+    } catch (e) {
+      console.error('Failed to save records:', e);
+    }
+  }
+
+  // === Age selection ===
+  function selectAge(age, element) {
+    document.querySelectorAll('.age-button').forEach(b => b.classList.remove('active'));
+    element.classList.add('active');
+    currentAge = age;
+  }
+
+  // === Scenario selection ===
+  function selectScenario(scenario, element) {
+    document.querySelectorAll('.scenario-card').forEach(c => c.classList.remove('active'));
+    element.classList.add('active');
+    currentScenario = scenario;
+  }
+
+  // === Reaction selection ===
+  function toggleReaction(reaction, element, event) {
+    const checkbox = element.querySelector('input[type="checkbox"]');
+    if (event && event.target !== checkbox) {
+      checkbox.checked = !checkbox.checked;
+    }
+    if (checkbox.checked) {
+      element.classList.add('selected');
+      selectedReactions.add(reaction);
+    } else {
+      element.classList.remove('selected');
+      selectedReactions.delete(reaction);
+    }
+  }
+
+  function toggleResponseSelection(index, checkbox, event) {
+    if (event && event.target !== checkbox) {
+      checkbox.checked = !checkbox.checked;
+    }
+    if (checkbox.checked) {
+      selectedResponses.add(index);
+    } else {
+      selectedResponses.delete(index);
+    }
+  }
+
+  // === Tab switching ===
+  function switchTab(name) {
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
+
+    const tabs = { translate: 0, note: 1, history: 2 };
+    const tabContents = ['translateTab', 'noteTab', 'historyTab'];
+    
+    document.getElementById(tabContents[tabs[name]]).classList.add('active');
+    document.querySelectorAll('.tab-button')[tabs[name]].classList.add('active');
+
+    if (name === 'history') {
+      displayHistory();
+    }
+  }
+
+  // === Step navigation ===
+  function showStep1() {
+    document.getElementById('step1').classList.remove('hidden');
+    document.getElementById('step2').classList.add('hidden');
+    document.getElementById('step3').classList.add('hidden');
+    updateStepIndicator(1);
+  }
+
+  function showStep2() {
+    if (!currentScenario) {
+      alert('Please pick a situation first (just choose the one that feels closest).');
+      return;
+    }
+    analyzeAndDisplay();
+    document.getElementById('step1').classList.add('hidden');
+    document.getElementById('step2').classList.remove('hidden');
+    document.getElementById('step3').classList.add('hidden');
+    updateStepIndicator(2);
+  }
+
+  function showStep3() {
+    selectedReactions.clear();
+    document.querySelectorAll('.reaction-card').forEach(card => {
+      card.classList.remove('selected');
+      const cb = card.querySelector('input[type="checkbox"]');
+      if (cb) cb.checked = false;
+    });
+    
+    document.getElementById('step1').classList.add('hidden');
+    document.getElementById('step2').classList.add('hidden');
+    document.getElementById('step3').classList.remove('hidden');
+    updateStepIndicator(3);
+  }
+
+  function updateStepIndicator(step) {
+    for (let i = 1; i <= 3; i++) {
+      const dot = document.getElementById(`stepDot${i}`);
+      if (i === step) {
+        dot.classList.add('active');
+      } else {
+        dot.classList.remove('active');
+      }
+    }
+  }
+
+  // === Analysis based on age + scenario + user text ===
+  function analyzeAndDisplay() {
+    const template = scenarioTemplates[currentScenario];
+    const ageData = template.ageVariants[currentAge];
+    const userText = document.getElementById('scenarioText').value.trim().toLowerCase();
+
+    let emotions = [...ageData.emotions];
+    emotions.forEach(e => {
+      let score = 0;
+      e.keywords.forEach(k => {
+        if (userText.includes(k.toLowerCase())) {
+          score += 2;
+        }
+      });
+      e.relevance = score > 0 ? score : 1;
+    });
+    emotions.sort((a, b) => b.relevance - a.relevance);
+    emotions = emotions.slice(0, 3);
+
+    let needs = [...ageData.needs];
+    needs.forEach(n => {
+      let score = 0;
+      n.keywords.forEach(k => {
+        if (userText.includes(k.toLowerCase())) {
+          score += 2;
+        }
+      });
+      n.relevance = score > 0 ? score : 1;
+    });
+    needs.sort((a, b) => b.relevance - a.relevance);
+    needs = needs.slice(0, 3);
+
+    const responses = [...ageData.responses];
+
+    currentAnalysis = { emotions, needs, responses, userText };
+    selectedResponses.clear();
+    displayAnalysis();
+  }
+
+  function displayAnalysis() {
+    const { emotions, needs, responses } = currentAnalysis;
+    
+    const emotionHTML = emotions
+      .map(e => `
+        <div class="emotion-badge">
+          <span class="emotion-emoji">${e.emoji}</span>${e.text}
+          <div class="emotion-phrase">👉 You could say: ${e.phrase}</div>
+        </div>
+      `)
+      .join('');
+    document.getElementById('emotionItems').innerHTML = emotionHTML;
+
+    const needHTML = needs
+      .map(n => `
+        <div class="need-badge">
+          <span class="emotion-emoji">${n.emoji}</span>${n.text}
+          <div class="need-phrase">💡 Key idea: ${n.phrase}</div>
+        </div>
+      `)
+      .join('');
+    document.getElementById('needItems').innerHTML = needHTML;
+
+    const responseHTML = responses
+      .map((r, i) => `
+        <div class="response-item">
+          <span class="response-number">${i+1}</span>
+          <span class="response-main">${r.main}</span>
+          <div class="response-say">
+            👉 Possible wording: <strong>“${r.say.replace(/^“|”$/g, '').replace(/^"|"$/g, '')}”</strong>
+          </div>
+          <label class="response-select" onclick="toggleResponseSelection(${i}, this.querySelector('input'), event)">
+            <input type="checkbox" onchange="toggleResponseSelection(${i}, this, event)"> I’d like to try this one
+          </label>
+        </div>
+      `)
+      .join('');
+    document.getElementById('responseItems').innerHTML = responseHTML;
+  }
+
+  // === Encouragement block ===
+  function generateEncouragement() {
+    const reactions = Array.from(selectedReactions);
+    
+    if (reactions.length === 0) {
+      return {
+        emoji: '💪',
+        highlight: 'Just showing up here and filling this out is already caring for your relationship.',
+        message: encouragementMessages.noSelection
+      };
+    }
+
+    const negativeReactions = ['raiseVoice', 'threaten', 'giveUp', 'cold', 'compare', 'label'];
+    const positiveReactions = ['empathy', 'boundary', 'repair'];
+    
+    const negativeCount = reactions.filter(r => negativeReactions.includes(r)).length;
+    const positiveCount = reactions.filter(r => positiveReactions.includes(r)).length;
+
+    let messages = [];
+
+    reactions.forEach(r => {
+      if (encouragementMessages[r]) {
+        messages.push(encouragementMessages[r]);
+      }
+    });
+
+    let highlight = '';
+    if (positiveCount > 0 && negativeCount === 0) {
+      messages.push(encouragementMessages.allPositive);
+      highlight = 'You actually did quite a few things that help the relationship grow.';
+    } else if (negativeCount > 0 && positiveCount === 0) {
+      messages.push(encouragementMessages.allNegative);
+      highlight = 'Today was hard, and you still care enough to look back at it.';
+    } else if (positiveCount > 0 && negativeCount > 0) {
+      messages.push(encouragementMessages.mixed);
+      highlight = 'You’re seeing both your rough edges and your efforts — that’s real growth.';
+    }
+
+    const selectedMessages = messages.slice(0, 2).join('\n\n');
+
+    return {
+      emoji: positiveCount >= negativeCount ? '🌟' : '💪',
+      highlight: highlight || 'You’re quietly shifting how you show up with your child.',
+      message: selectedMessages
+    };
+  }
+
+  // === Note generation + saving ===
+  function goToNote() {
+    if (!currentScenario || !currentAnalysis) {
+      alert('Please finish the first 2 steps of the translation before viewing the note.');
+      return;
+    }
+    
+    generateNote();
+    switchTab('note');
+  }
+
+  function generateNote() {
+    if (!currentScenario || !currentAnalysis) {
+      document.getElementById('noteBox').innerHTML = '<span class="note-placeholder">Please complete the 3 steps on the left first.</span>';
+      document.getElementById('encouragementSection').innerHTML = '';
+      return;
+    }
+
+    const template = scenarioTemplates[currentScenario];
+    const text = document.getElementById('scenarioText').value.trim();
+    const { emotions, needs, responses } = currentAnalysis;
+
+    const ageNames = {
+      toddler: '1–3 years old',
+      preschool: '3–6 years old',
+      school: '6–12 years old'
+    };
+
+    const reactionMap = {
+      raiseVoice: 'My feelings got big and I raised my voice',
+      threaten: 'I used “If you…, then I’ll…” type threats',
+      giveUp: 'I ended up giving in / dropping my boundary',
+      cold: 'I pulled back or went “cold” for a while',
+      compare: 'I compared my child to someone else',
+      label: 'I used labels (“You’re so…”, “You always…”)',
+      empathy: 'I tried to name their feelings first',
+      boundary: 'I set a kind but firm boundary',
+      repair: 'I tried to reconnect or repair afterwards',
+      tiredBlank: 'I was really tired and my brain went blank'
+    };
+
+    const myReactions = Array.from(selectedReactions)
+      .map(r => '・ ' + (reactionMap[r] || r))
+      .join('\n') || '・ I’m not fully sure how I reacted today — I’m just starting to notice it.';
+
+    let practiceList = [];
+    if (selectedResponses.size > 0) {
+      Array.from(selectedResponses).slice(0, 2).forEach(idx => {
+        const item = responses[idx];
+        if (item) {
+          practiceList.push(`・ ${item.main}\n  👉 Example line: “${item.say.replace(/^“|”$/g, '').replace(/^"|"$/g, '')}”`);
+        }
+      });
+    } else if (responses.length > 0) {
+      const item = responses[0];
+      practiceList.push(`・ ${item.main}\n  👉 Example line: “${item.say.replace(/^“|”$/g, '').replace(/^"|"$/g, '')}”`);
+    }
+
+    let eventSection = '';
+    if (text) {
+      const shortText = text.length > 180 ? text.slice(0, 180) + '...' : text;
+      eventSection = `🎯 What happened:
+${shortText}
+
+`;
+    } else {
+      eventSection = `🎯 What happened:
+(I didn’t write details this time, just choosing to pause and reflect.)
+
+`;
+    }
+
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('en-US');
+    const dateTimeStr = now.toLocaleString('en-US');
+
+    const note = `📅 ${dateStr} | ${template.icon} ${template.name}
+👶 Child’s age: about ${ageNames[currentAge]}
+
+${eventSection}💭 How my child might have been feeling:
+・ ${emotions.map(e => e.text).join('\n・ ')}
+
+💚 What my child might really have needed:
+・ ${needs.map(n => n.text).join('\n・ ')}
+
+🤔 How I roughly reacted:
+${myReactions}
+
+💡 1–2 things I’d like to try next time:
+${practiceList.join('\n') || '・ I’m not sure yet. I’ll give myself some time and come back to this.'}
+
+———
+Note created at: ${dateTimeStr}`;
+
+    document.getElementById('noteBox').textContent = note;
+
+    const encouragement = generateEncouragement();
+    const encouragementHTML = `
+      <div class="encouragement-box">
+        <div class="encouragement-title">
+          <span>${encouragement.emoji}</span> A few words for you
+        </div>
+        <div class="encouragement-content">
+          <div class="encouragement-highlight">${encouragement.highlight}</div>
+          ${encouragement.message.replace(/\n\n/g, '<br><br>')}
+        </div>
+      </div>
+    `;
+    document.getElementById('encouragementSection').innerHTML = encouragementHTML;
+
+    const record = {
+      id: Date.now(),
+      date: now.toISOString(),
+      age: currentAge,
+      ageName: ageNames[currentAge],
+      scenario: currentScenario,
+      scenarioName: template.name,
+      text: text || '(No detailed description added.)',
+      emotions: emotions.map(e => e.text),
+      needs: needs.map(n => n.text),
+      responses: responses,
+      selectedResponseIndexes: Array.from(selectedResponses),
+      reactions: Array.from(selectedReactions),
+      note: note,
+      encouragement: encouragement.message
+    };
+
+    const existingIndex = records.findIndex(r => 
+      r.scenario === record.scenario && 
+      r.text === record.text && 
+      Math.abs(new Date(r.date) - new Date(record.date)) < 60000
+    );
+
+    if (existingIndex >= 0) {
+      records[existingIndex] = record;
+    } else {
+      records.unshift(record);
+    }
+
+    records = records.slice(0, 50);
+    saveRecords();
+    updateHistoryCount();
+  }
+
+  function regenerateNote() {
+    generateNote();
+  }
+
+  function copyNote() {
+    const noteBox = document.getElementById('noteBox');
+    const text = noteBox.textContent;
+    const copyHint = document.getElementById('copyHint');
+    if (!text || text.includes('Please complete the 3 steps on the left first')) {
+      alert('Please finish the 3 translation steps before copying your note.');
+      return;
+    }
+    
+    const encouragementText = document.querySelector('.encouragement-content')?.textContent || '';
+    const fullText = text + (encouragementText ? '\n\n💪 A small note to myself:\n' + encouragementText : '');
+    
+    navigator.clipboard.writeText(fullText).then(() => {
+      copyHint.textContent = '✅ Copied. You can paste this into your notes app, email, or a message to someone you trust.';
+      setTimeout(() => {
+        copyHint.textContent = '';
+      }, 3500);
+    }).catch(() => {
+      alert('Copy failed. Please select the text manually and copy.');
+    });
+  }
+
+  // === Weekly review ===
+  function displayHistory() {
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+    const recentRecords = records.filter(r => new Date(r.date) >= sevenDaysAgo);
+
+    const historyList = document.getElementById('historyList');
+    const summaryBox = document.getElementById('historySummary');
+
+    if (recentRecords.length === 0) {
+      historyList.innerHTML = `
+        <div class="empty-history">
+          <div class="empty-history-icon">📭</div>
+          <p>No entries in the last 7 days.</p>
+          <p style="font-size: 0.9em; color: #999; margin-top: 8px;">Once you complete at least one translation, you’ll start to see your patterns here.</p>
+        </div>
+      `;
+      summaryBox.classList.add('hidden');
+      summaryBox.textContent = '';
+      return;
+    }
+
+    const scenarioCount = {};
+    const reactionMapShort = {
+      raiseVoice: 'raised voice',
+      threaten: 'used threats',
+      giveUp: 'gave in / dropped boundaries',
+      cold: 'went cold / withdrew',
+      compare: 'compared child',
+      label: 'used labels',
+      empathy: 'named feelings',
+      boundary: 'set a boundary',
+      repair: 'repaired afterwards',
+      tiredBlank: 'felt exhausted'
+    };
+    const negativeReactions = ['raiseVoice', 'threaten', 'giveUp', 'cold', 'compare', 'label'];
+    const positiveReactions = ['empathy', 'boundary', 'repair'];
+
+    let negativeTimes = 0;
+    let positiveTimes = 0;
+
+    recentRecords.forEach(r => {
+      scenarioCount[r.scenarioName] = (scenarioCount[r.scenarioName] || 0) + 1;
+      (r.reactions || []).forEach(re => {
+        if (negativeReactions.includes(re)) negativeTimes++;
+        if (positiveReactions.includes(re)) positiveTimes++;
+      });
+    });
+
+    let topScenario = '';
+    let topScenarioCount = 0;
+    Object.entries(scenarioCount).forEach(([name, count]) => {
+      if (count > topScenarioCount) {
+        topScenarioCount = count;
+        topScenario = name;
+      }
+    });
+
+    const summaryLines = [];
+    summaryLines.push(`In the last 7 days, you logged ${recentRecords.length} parent–child moments.`);
+    if (topScenario) {
+      summaryLines.push(`The most common situation was: ${topScenario} (about ${topScenarioCount} times).`);
+    }
+    if (positiveTimes > 0 || negativeTimes > 0) {
+      summaryLines.push(`Across these entries, you used “empathy / boundaries / repair” about ${positiveTimes} time(s), and had “raised voice / threats / withdrawal” type reactions about ${negativeTimes} time(s).`);
+      if (positiveTimes > negativeTimes) {
+        summaryLines.push('Overall, you’re already leaning more toward connection + clear boundaries, even on hard days.');
+      } else {
+        summaryLines.push('Even when your reactions feel rough, your willingness to look back at them is a real form of growth.');
+      }
+    } else {
+      summaryLines.push('You’re building a habit of logging these moments. Over time, checking your own reactions here will show you even more patterns.');
+    }
+
+    summaryBox.textContent = summaryLines.join('\n');
+    summaryBox.classList.remove('hidden');
+
+    const historyHTML = recentRecords.map(r => {
+      const date = new Date(r.date);
+      const hours = String(date.getHours()).padStart(2, '0');
+      const minutes = String(date.getMinutes()).padStart(2, '0');
+      const dateStr = `${date.getMonth() + 1}/${date.getDate()} ${hours}:${minutes}`;
+      
+      const eventText = r.text === '(No detailed description added.)' ? '(No detailed description added.)' : r.text;
+      
+      return `
+        <div class="history-item">
+          <div class="history-header">
+            <div class="history-date">${dateStr}</div>
+            <div class="history-scenario">${r.ageName || ''} | ${r.scenarioName}</div>
+          </div>
+          <div class="history-content">
+            <strong>What happened:</strong> ${eventText}<br>
+            <strong>Child’s feelings:</strong> ${r.emotions.join(', ')}<br>
+            <strong>My reaction:</strong> ${r.reactions.length > 0 ? r.reactions.map(re => reactionMapShort[re] || re).join(', ') : 'not selected'}<br>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    historyList.innerHTML = historyHTML;
+  }
+
+  function updateHistoryCount() {
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    const recentCount = records.filter(r => new Date(r.date) >= sevenDaysAgo).length;
+    
+    if (recentCount > 0) {
+      document.querySelectorAll('.tab-button')[2].innerHTML = `📊 Weekly Review (${recentCount})`;
+    } else {
+      document.querySelectorAll('.tab-button')[2].innerHTML = `📊 Weekly Review`;
+    }
+  }
+
+  function clearAllRecords() {
+    if (!confirm('Are you sure you want to clear all saved records?\n(This only deletes data stored in this browser on this device.)')) {
+      return;
+    }
+    records = [];
+    saveRecords();
+    updateHistoryCount();
+    displayHistory();
+  }
+
+  window.addEventListener('load', () => {
+    initRecords();
+    updateHistoryCount();
+  });
+</script>
+</body>
+</html>

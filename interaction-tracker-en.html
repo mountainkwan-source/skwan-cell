@@ -1,0 +1,1350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parent-Child Interaction Ratio Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.2em;
+            margin-bottom: 10px;
+        }
+        
+        .header .subtitle {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .tab-navigation {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .tab-button {
+            flex: 1;
+            padding: 18px;
+            background: none;
+            border: none;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: #666;
+            font-family: inherit;
+        }
+        
+        .tab-button.active {
+            background: white;
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+        }
+        
+        .tab-button:hover {
+            background: #e9ecef;
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 40px;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .info-box {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border-left: 6px solid #e17055;
+        }
+        
+        .info-box h2 {
+            color: #d63031;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+        
+        .info-box ul {
+            list-style: none;
+            margin-top: 10px;
+        }
+        
+        .info-box li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+            line-height: 1.6;
+        }
+        
+        .info-box li:before {
+            content: "💡";
+            position: absolute;
+            left: 0;
+        }
+        
+        .date-selector {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .date-selector label {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-right: 15px;
+            color: #333;
+        }
+        
+        .date-selector input,
+        .date-selector select {
+            padding: 10px 15px;
+            font-size: 1.1em;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            outline: none;
+            font-family: inherit;
+        }
+        
+        .tracker-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .tracker-box {
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .positive-box {
+            background: linear-gradient(135deg, #a8e6cf 0%, #56cc9d 100%);
+            border: 3px solid #2ecc71;
+        }
+        
+        .negative-box {
+            background: linear-gradient(135deg, #ffb3ba 0%, #ff6b6b 100%);
+            border: 3px solid #e74c3c;
+        }
+        
+        .tracker-box h3 {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .counter-display {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .counter-number {
+            font-size: 4em;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        
+        .positive-box .counter-number {
+            color: #27ae60;
+        }
+        
+        .negative-box .counter-number {
+            color: #c0392b;
+        }
+        
+        .counter-label {
+            font-size: 1.1em;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 12px 30px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+        
+        .btn-add {
+            background: #2ecc71;
+            color: white;
+        }
+        
+        .btn-add:hover {
+            background: #27ae60;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(46,204,113,0.4);
+        }
+        
+        .btn-subtract {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .btn-subtract:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(231,76,60,0.4);
+        }
+        
+        .btn-reset {
+            background: #95a5a6;
+            color: white;
+            margin-top: 10px;
+            width: 100%;
+        }
+        
+        .btn-reset:hover {
+            background: #7f8c8d;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+        
+        .btn-secondary:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        .examples {
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(255,255,255,0.5);
+            border-radius: 8px;
+            font-size: 0.9em;
+        }
+        
+        .examples h4 {
+            margin-bottom: 8px;
+            color: #2c3e50;
+        }
+        
+        .examples ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .examples li {
+            padding: 4px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .examples li:before {
+            content: "▸";
+            position: absolute;
+            left: 5px;
+            font-weight: bold;
+        }
+        
+        .result-section {
+            background: linear-gradient(135deg, #e8f4f8 0%, #d4e6f1 100%);
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 30px;
+            border: 3px solid #3498db;
+        }
+        
+        .result-section h2 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+        
+        .ratio-display {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .ratio-number {
+            font-size: 3em;
+            font-weight: bold;
+            color: #3498db;
+            margin: 10px 0;
+        }
+        
+        .ratio-bar {
+            width: 100%;
+            height: 40px;
+            background: #ecf0f1;
+            border-radius: 20px;
+            overflow: hidden;
+            margin: 20px 0;
+            position: relative;
+        }
+        
+        .ratio-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #2ecc71 0%, #27ae60 100%);
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .ratio-bar-negative {
+            position: absolute;
+            right: 0;
+            top: 0;
+            height: 100%;
+            background: linear-gradient(90deg, #e74c3c 0%, #c0392b 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .feedback {
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+        
+        .feedback-excellent {
+            background: #d5f4e6;
+            border-left: 5px solid #2ecc71;
+            color: #145a32;
+        }
+        
+        .feedback-good {
+            background: #fff9e6;
+            border-left: 5px solid #f39c12;
+            color: #7d6608;
+        }
+        
+        .feedback-warning {
+            background: #fadbd8;
+            border-left: 5px solid #e74c3c;
+            color: #78281f;
+        }
+        
+        .tips-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .tip-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            border-left: 5px solid #667eea;
+        }
+        
+        .tip-card h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+        
+        .tip-card p {
+            color: #555;
+            line-height: 1.6;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            border: 2px solid #667eea30;
+        }
+        
+        .stat-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 8px;
+        }
+        
+        .stat-label {
+            font-size: 1em;
+            color: #666;
+        }
+        
+        .chart-container {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .chart-title {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        
+        .line-chart {
+            height: 220px;
+            display: flex;
+            align-items: flex-end;
+            gap: 15px;
+            padding: 20px 0;
+            position: relative;
+        }
+        
+        .line-bar {
+            flex: 1;
+            background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+            border-radius: 8px 8px 0 0;
+            min-height: 10px;
+            position: relative;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .line-bar:hover {
+            opacity: 0.8;
+            transform: translateY(-5px);
+        }
+        
+        .line-bar-label {
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.9em;
+            color: #666;
+            white-space: nowrap;
+        }
+        
+        .line-bar-value {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.85em;
+            font-weight: bold;
+            color: #667eea;
+            white-space: nowrap;
+        }
+        
+        .history-section {
+            margin-top: 0;
+            padding: 0;
+        }
+        
+        .history-section h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+        
+        .history-list {
+            list-style: none;
+        }
+        
+        .history-item {
+            background: #f8f9fa;
+            padding: 18px 20px;
+            margin-bottom: 12px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+        }
+        
+        .history-item:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+        
+        .history-date {
+            font-weight: bold;
+            color: #2c3e50;
+            font-size: 1.05em;
+        }
+        
+        .history-ratio {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 6px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9em;
+            margin-left: 15px;
+            transition: all 0.3s;
+        }
+        
+        .delete-btn:hover {
+            background: #c82333;
+            transform: scale(1.05);
+        }
+        
+        @media print {
+            body {
+                background: white;
+            }
+            .btn, .tab-navigation {
+                display: none;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .tracker-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .tab-content {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 1.6em;
+            }
+            
+            .counter-number {
+                font-size: 3em;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .tab-button {
+                font-size: 0.9em;
+                padding: 12px 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Parent-Child Interaction Ratio Tracker</h1>
+            <p class="subtitle">Track daily positive and negative interactions to achieve the science-backed 5:1 golden ratio</p>
+        </div>
+
+        <div class="tab-navigation">
+            <button class="tab-button active" onclick="switchTab('daily')">📅 Daily Log</button>
+            <button class="tab-button" onclick="switchTab('report')">📊 Weekly Report</button>
+            <button class="tab-button" onclick="switchTab('history')">📜 Full History</button>
+        </div>
+
+        <div id="dailyTab" class="tab-content active">
+            <div class="info-box">
+                <h2>🧠 What is Negativity Bias?</h2>
+                <ul>
+                    <li>The brain is naturally more sensitive to <strong>negative information</strong> and remembers it more deeply</li>
+                    <li>Scientific research: It takes <strong>5 positive interactions</strong> to offset <strong>1 negative interaction</strong></li>
+                    <li>Children's brains amplify criticism and minimize praise</li>
+                    <li>Long-term high negative ratio → anxiety, low self-esteem, distant parent-child relationship</li>
+                    <li><strong>Good news:</strong> Through deliberate practice, we can change interaction patterns!</li>
+                </ul>
+            </div>
+            
+            <div class="date-selector">
+                <label for="date-input">📅 Record Date:</label>
+                <input type="date" id="date-input">
+            </div>
+            
+            <div class="tracker-section">
+                <div class="tracker-box positive-box">
+                    <h3>✅ Positive Interactions</h3>
+                    <div class="counter-display">
+                        <div class="counter-label">Today's Total</div>
+                        <div class="counter-number" id="positive-count">0</div>
+                        <div class="counter-label">times</div>
+                    </div>
+                    <div class="button-group">
+                        <button class="btn btn-add" onclick="addPositive()">➕ Add</button>
+                        <button class="btn btn-subtract" onclick="subtractPositive()">➖ Subtract</button>
+                    </div>
+                    <button class="btn btn-reset" onclick="resetPositive()">🔄 Reset</button>
+                    
+                    <div class="examples">
+                        <h4>Positive interactions include:</h4>
+                        <ul>
+                            <li>Specific praise for behavior</li>
+                            <li>Physical affection (hugs, pats)</li>
+                            <li>Focused time (put down phone)</li>
+                            <li>Encouragement and affirmation</li>
+                            <li>Patient listening</li>
+                            <li>Smiles and eye contact</li>
+                            <li>Expressing gratitude</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="tracker-box negative-box">
+                    <h3>❌ Negative Interactions</h3>
+                    <div class="counter-display">
+                        <div class="counter-label">Today's Total</div>
+                        <div class="counter-number" id="negative-count">0</div>
+                        <div class="counter-label">times</div>
+                    </div>
+                    <div class="button-group">
+                        <button class="btn btn-add" onclick="addNegative()">➕ Add</button>
+                        <button class="btn btn-subtract" onclick="subtractNegative()">➖ Subtract</button>
+                    </div>
+                    <button class="btn btn-reset" onclick="resetNegative()">🔄 Reset</button>
+                    
+                    <div class="examples">
+                        <h4>Negative interactions include:</h4>
+                        <ul>
+                            <li>Criticism, scolding</li>
+                            <li>Negative labels ("you're stupid")</li>
+                            <li>Comparisons ("look at others")</li>
+                            <li>Impatient tone</li>
+                            <li>Ignoring, indifference</li>
+                            <li>Threats, intimidation</li>
+                            <li>Eye-rolling, sighing</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="result-section">
+                <h2>📈 Today's Interaction Ratio Analysis</h2>
+                
+                <div class="ratio-display">
+                    <div style="color: #666; margin-bottom: 10px;">Positive : Negative Ratio</div>
+                    <div class="ratio-number" id="ratio-display">-- : --</div>
+                </div>
+                
+                <div class="ratio-bar">
+                    <div class="ratio-bar-fill" id="ratio-bar-positive" style="width: 50%;">
+                        <span id="positive-percent">0</span>
+                    </div>
+                    <div class="ratio-bar-negative" id="ratio-bar-negative" style="width: 50%;">
+                        <span id="negative-percent">0</span>
+                    </div>
+                </div>
+                
+                <div id="feedback" class="feedback"></div>
+            </div>
+            
+            <div class="tips-section">
+                <div class="tip-card">
+                    <h4>💡 Boost Positive Interactions</h4>
+                    <p>Set a "praise alarm" every 2 hours to remind yourself to actively find good behaviors to affirm. Remember: praise should be specific!</p>
+                </div>
+                
+                <div class="tip-card">
+                    <h4>🎯 Reduce Negative Interactions</h4>
+                    <p>Before criticizing, take a deep breath for 3 seconds and ask yourself: "Will my child remember this in 10 years?" A different approach may work better.</p>
+                </div>
+                
+                <div class="tip-card">
+                    <h4>🌟 Bedtime Ritual</h4>
+                    <p>Share "3 good things today" with your child before bed, deliberately planting positive memories to counter negativity bias.</p>
+                </div>
+                
+                <div class="tip-card">
+                    <h4>📝 Record & Reflect</h4>
+                    <p>Spend 2 minutes recording daily. Don't blame yourself if the ratio isn't ideal - awareness is the first step. Try again tomorrow!</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="reportTab" class="tab-content">
+            <div style="text-align: center; margin-bottom: 30px;">
+                <h2 style="color: #667eea; margin-bottom: 10px;">📊 Weekly Interaction Analysis Report</h2>
+                <p style="color: #666;">Track your progress and build a better parent-child relationship</p>
+            </div>
+
+            <div class="date-selector">
+                <label for="weekSelect">Select Week:</label>
+                <select id="weekSelect" onchange="loadWeekReport()">
+                    <option value="current">This Week</option>
+                    <option value="last">Last Week</option>
+                    <option value="last2">2 Weeks Ago</option>
+                    <option value="last3">3 Weeks Ago</option>
+                </select>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="weekPositive">0</div>
+                    <div class="stat-label">Total Positive Interactions</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="weekNegative">0</div>
+                    <div class="stat-label">Total Negative Interactions</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="weekAvgRatio">0:0</div>
+                    <div class="stat-label">Average Ratio</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="weekBestDay">--</div>
+                    <div class="stat-label">Best Day</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="weekRecordDays">0</div>
+                    <div class="stat-label">Days Recorded</div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-title">📈 Daily Ratio Trend This Week</div>
+                <div class="line-chart" id="weekLineChart"></div>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-title">📊 Positive vs Negative Interactions This Week</div>
+                <div class="line-chart" id="weekBarChart" style="height: 180px;"></div>
+            </div>
+        </div>
+
+        <div id="historyTab" class="tab-content">
+            <div class="history-section">
+                <h3>📚 All Historical Records</h3>
+                <div class="button-group" style="margin-bottom: 25px;">
+                    <button class="btn btn-secondary" onclick="exportPDF()">📄 Export PDF</button>
+                    <button class="btn btn-secondary" onclick="window.print()">🖨️ Print Records</button>
+                </div>
+                <ul class="history-list" id="history-list">
+                    <li style="text-align: center; color: #999; padding: 20px;">No records yet. Start tracking today!</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    
+    <script>
+        function showConfirmDialog(message, onConfirm) {
+            const modal = document.createElement('div');
+            modal.className = 'fixed';
+            modal.style.cssText = 'position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 9999;';
+            modal.innerHTML = `
+                <div style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); max-width: 400px; width: 90%; margin: 20px;">
+                    <p style="color: #2c3e50; margin-bottom: 25px; font-size: 1.1em; line-height: 1.6;">${message}</p>
+                    <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                        <button style="padding: 10px 20px; background: #95a5a6; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 1em; font-weight: bold;" onclick="this.closest('.fixed').remove()">Cancel</button>
+                        <button style="padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 1em; font-weight: bold;" onclick="this.closest('.fixed').remove(); (${onConfirm.toString()})()">Confirm</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        function showAlert(message) {
+            const modal = document.createElement('div');
+            modal.className = 'fixed';
+            modal.style.cssText = 'position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 9999;';
+            modal.innerHTML = `
+                <div style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); max-width: 400px; width: 90%; margin: 20px;">
+                    <p style="color: #2c3e50; margin-bottom: 25px; font-size: 1.1em; line-height: 1.6;">${message}</p>
+                    <div style="display: flex; justify-content: flex-end;">
+                        <button style="padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 1em; font-weight: bold;" onclick="this.closest('.fixed').remove()">OK</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        let positiveCount = 0;
+        let negativeCount = 0;
+        let history = JSON.parse(localStorage.getItem('interactionHistory-en')) || [];
+        
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('date-input').value = today;
+        
+        loadTodayData();
+        updateDisplay();
+        displayHistory();
+        
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            if (tabName === 'daily') {
+                document.getElementById('dailyTab').classList.add('active');
+                document.querySelectorAll('.tab-button')[0].classList.add('active');
+            } else if (tabName === 'report') {
+                document.getElementById('reportTab').classList.add('active');
+                document.querySelectorAll('.tab-button')[1].classList.add('active');
+                loadWeekReport();
+            } else if (tabName === 'history') {
+                document.getElementById('historyTab').classList.add('active');
+                document.querySelectorAll('.tab-button')[2].classList.add('active');
+                displayHistory();
+            }
+        }
+        
+        function addPositive() {
+            positiveCount++;
+            updateDisplay();
+            saveData();
+        }
+        
+        function subtractPositive() {
+            if (positiveCount > 0) {
+                positiveCount--;
+                updateDisplay();
+                saveData();
+            }
+        }
+        
+        function resetPositive() {
+            showConfirmDialog('Are you sure you want to reset the positive count?', function() {
+                positiveCount = 0;
+                updateDisplay();
+                saveData();
+            });
+        }
+        
+        function addNegative() {
+            negativeCount++;
+            updateDisplay();
+            saveData();
+        }
+        
+        function subtractNegative() {
+            if (negativeCount > 0) {
+                negativeCount--;
+                updateDisplay();
+                saveData();
+            }
+        }
+        
+        function resetNegative() {
+            showConfirmDialog('Are you sure you want to reset the negative count?', function() {
+                negativeCount = 0;
+                updateDisplay();
+                saveData();
+            });
+        }
+        
+        function updateDisplay() {
+            document.getElementById('positive-count').textContent = positiveCount;
+            document.getElementById('negative-count').textContent = negativeCount;
+            
+            let ratio = '';
+            let posPercent = 0;
+            let negPercent = 0;
+            let feedbackText = '';
+            let feedbackClass = '';
+            
+            if (positiveCount === 0 && negativeCount === 0) {
+                ratio = '-- : --';
+                posPercent = 50;
+                negPercent = 50;
+                feedbackText = 'Start recording your interactions with your child today! Every conscious positive interaction reshapes your child\'s brain.';
+                feedbackClass = 'feedback-good';
+            } else if (negativeCount === 0) {
+                ratio = positiveCount + ' : 0';
+                posPercent = 100;
+                negPercent = 0;
+                feedbackText = '🎉 Excellent! All positive interactions today! Your child\'s brain is being nourished with love and affirmation. Keep it up!';
+                feedbackClass = 'feedback-excellent';
+            } else {
+                const actualRatio = (positiveCount / negativeCount).toFixed(1);
+                ratio = actualRatio + ' : 1';
+                const total = positiveCount + negativeCount;
+                posPercent = Math.round((positiveCount / total) * 100);
+                negPercent = Math.round((negativeCount / total) * 100);
+                
+                if (actualRatio >= 5) {
+                    feedbackText = `🌟 Outstanding! Ratio achieved ${actualRatio}:1, exceeding the science-backed 5:1 golden ratio! Your child is growing in a healthy emotional environment, and the parent-child relationship is solid.`;
+                    feedbackClass = 'feedback-excellent';
+                } else if (actualRatio >= 3) {
+                    const need = Math.ceil(negativeCount * 5 - positiveCount);
+                    feedbackText = `👍 Great! Ratio ${actualRatio}:1, getting close to the goal. Add ${need} more positive interactions to reach the 5:1 golden ratio. Keep going!`;
+                    feedbackClass = 'feedback-good';
+                } else if (actualRatio >= 1) {
+                    feedbackText = `⚠️ Needs improvement. Ratio ${actualRatio}:1 is below recommended standards. Negative interactions impact your child 5 times more than positive ones! Suggestion: Pause criticism and focus on praising good behavior.`;
+                    feedbackClass = 'feedback-warning';
+                } else {
+                    feedbackText = '🚨 Alert! More negative than positive interactions. This can seriously affect your child\'s self-esteem and the parent-child relationship. Suggestion: For the rest of today, only say positive things. Start fresh tomorrow.';
+                    feedbackClass = 'feedback-warning';
+                }
+            }
+            
+            document.getElementById('ratio-display').textContent = ratio;
+            document.getElementById('positive-percent').textContent = posPercent + '%';
+            document.getElementById('negative-percent').textContent = negPercent + '%';
+            document.getElementById('ratio-bar-positive').style.width = posPercent + '%';
+            document.getElementById('ratio-bar-negative').style.width = negPercent + '%';
+            
+            const feedbackEl = document.getElementById('feedback');
+            feedbackEl.textContent = feedbackText;
+            feedbackEl.className = 'feedback ' + feedbackClass;
+        }
+        
+        function saveData() {
+            const currentDate = document.getElementById('date-input').value;
+            const existingIndex = history.findIndex(item => item.date === currentDate);
+            
+            const record = {
+                date: currentDate,
+                positive: positiveCount,
+                negative: negativeCount,
+                ratio: negativeCount === 0 ? positiveCount : (positiveCount / negativeCount).toFixed(1)
+            };
+            
+            if (existingIndex >= 0) {
+                history[existingIndex] = record;
+            } else {
+                history.push(record);
+            }
+            
+            history.sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            localStorage.setItem('interactionHistory-en', JSON.stringify(history));
+            displayHistory();
+        }
+        
+        function loadTodayData() {
+            const currentDate = document.getElementById('date-input').value;
+            const todayRecord = history.find(item => item.date === currentDate);
+            
+            if (todayRecord) {
+                positiveCount = todayRecord.positive;
+                negativeCount = todayRecord.negative;
+            } else {
+                positiveCount = 0;
+                negativeCount = 0;
+            }
+        }
+        
+        function displayHistory() {
+            const historyList = document.getElementById('history-list');
+            
+            if (history.length === 0) {
+                historyList.innerHTML = '<li style="text-align: center; color: #999; padding: 20px;">No records yet. Start tracking today!</li>';
+                return;
+            }
+            
+            const weekdayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+            
+            historyList.innerHTML = history.map(item => {
+                const date = new Date(item.date);
+                const dateStr = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()} (${weekdayNames[date.getDay()]})`;
+                
+                const ratioColor = item.ratio >= 5 ? '#27ae60' : item.ratio >= 3 ? '#f39c12' : '#e74c3c';
+                
+                return `
+                    <li class="history-item">
+                        <span class="history-date">${dateStr}</span>
+                        <span>Positive: ${item.positive} | Negative: ${item.negative}</span>
+                        <div>
+                            <span class="history-ratio" style="color: ${ratioColor}">
+                                ${item.negative === 0 ? item.positive + ':0' : item.ratio + ':1'}
+                            </span>
+                            <button class="delete-btn" onclick="deleteRecord('${item.date}')">Delete</button>
+                        </div>
+                    </li>
+                `;
+            }).join('');
+        }
+        
+        function deleteRecord(date) {
+            showConfirmDialog('Are you sure you want to delete this record? ' + date, function() {
+                history = history.filter(item => item.date !== date);
+                localStorage.setItem('interactionHistory-en', JSON.stringify(history));
+                displayHistory();
+                
+                if (document.getElementById('date-input').value === date) {
+                    loadTodayData();
+                    updateDisplay();
+                }
+            });
+        }
+        
+        function exportPDF() {
+            if (history.length === 0) {
+                showAlert('No records to export!');
+                return;
+            }
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            const totalPositive = history.reduce((sum, item) => sum + item.positive, 0);
+            const totalNegative = history.reduce((sum, item) => sum + item.negative, 0);
+            const avgRatio = totalNegative === 0 ? 
+                (totalPositive > 0 ? totalPositive + ':0' : '0:0') : 
+                (totalPositive / totalNegative).toFixed(1) + ':1';
+            
+            doc.setFontSize(24);
+            doc.setTextColor(102, 126, 234);
+            doc.text('Parent-Child Interaction Report', 105, 25, { align: 'center' });
+            
+            doc.setFontSize(12);
+            doc.setTextColor(100);
+            doc.text('Positive & Negative Interaction Tracking', 105, 33, { align: 'center' });
+            
+            doc.setFontSize(10);
+            const exportDate = new Date().toLocaleDateString('en-US');
+            doc.text('Export Date: ' + exportDate, 105, 42, { align: 'center' });
+            
+            doc.setDrawColor(102, 126, 234);
+            doc.setLineWidth(0.5);
+            doc.line(20, 48, 190, 48);
+            
+            doc.setFontSize(16);
+            doc.setTextColor(0);
+            doc.setFont(undefined, 'bold');
+            doc.text('Summary Statistics', 20, 58);
+            
+            doc.setFontSize(11);
+            doc.setFont(undefined, 'normal');
+            doc.text('Total Record Days: ' + history.length, 25, 68);
+            doc.text('Total Positive Interactions: ' + totalPositive, 25, 76);
+            doc.text('Total Negative Interactions: ' + totalNegative, 25, 84);
+            doc.text('Average Ratio: ' + avgRatio, 25, 92);
+            
+            doc.setFontSize(10);
+            doc.setTextColor(100);
+            doc.text('Target: 5:1 (5 positive interactions for every 1 negative)', 25, 100);
+            
+            const tableHeaders = ['Date', 'Positive', 'Negative', 'Ratio', 'Status'];
+            const statusLabels = ['Excellent', 'Good', 'Fair', 'Need Improvement'];
+            
+            const tableData = history.map(item => {
+                const date = new Date(item.date);
+                const dateStr = date.toLocaleDateString('en-US');
+                const ratioStr = item.negative === 0 ? `${item.positive}:0` : `${item.ratio}:1`;
+                
+                let status = '';
+                const ratioNum = item.negative === 0 ? item.positive : parseFloat(item.ratio);
+                if (ratioNum >= 5) status = statusLabels[0];
+                else if (ratioNum >= 3) status = statusLabels[1];
+                else if (ratioNum >= 1) status = statusLabels[2];
+                else status = statusLabels[3];
+                
+                return [dateStr, item.positive, item.negative, ratioStr, status];
+            });
+            
+            doc.autoTable({
+                startY: 110,
+                head: [tableHeaders],
+                body: tableData,
+                theme: 'grid',
+                headStyles: {
+                    fillColor: [102, 126, 234],
+                    fontSize: 11,
+                    fontStyle: 'bold',
+                    halign: 'center'
+                },
+                bodyStyles: {
+                    fontSize: 10,
+                    halign: 'center'
+                },
+                columnStyles: {
+                    0: { cellWidth: 40 },
+                    1: { cellWidth: 30 },
+                    2: { cellWidth: 30 },
+                    3: { cellWidth: 30 },
+                    4: { cellWidth: 45, fontStyle: 'bold' }
+                },
+                didParseCell: function(data) {
+                    if (data.section === 'body' && data.column.index === 4) {
+                        const status = data.cell.raw;
+                        if (status === statusLabels[0]) {
+                            data.cell.styles.textColor = [39, 174, 96];
+                        } else if (status === statusLabels[1]) {
+                            data.cell.styles.textColor = [243, 156, 18];
+                        } else if (status === statusLabels[2]) {
+                            data.cell.styles.textColor = [230, 126, 34];
+                        } else {
+                            data.cell.styles.textColor = [231, 76, 60];
+                        }
+                    }
+                }
+            });
+            
+            const finalY = doc.lastAutoTable.finalY || 110;
+            if (finalY < 250) {
+                doc.setFontSize(9);
+                doc.setTextColor(100);
+                doc.text('Note: Research shows that 5 positive interactions are needed to offset 1 negative interaction.', 20, finalY + 15, { maxWidth: 170 });
+                doc.text('Maintaining a high positive-to-negative ratio promotes healthy child development.', 20, finalY + 23, { maxWidth: 170 });
+            }
+            
+            const pageCount = doc.internal.getNumberOfPages();
+            for (let i = 1; i <= pageCount; i++) {
+                doc.setPage(i);
+                doc.setFontSize(8);
+                doc.setTextColor(150);
+                doc.text(`Page ${i} of ${pageCount}`, 105, 285, { align: 'center' });
+            }
+            
+            doc.save('Parent-Child_Interaction_Report_' + new Date().toISOString().split('T')[0] + '.pdf');
+        }
+        
+        function getWeekDates(weekType) {
+            const today = new Date();
+            const currentDay = today.getDay();
+            const diff = currentDay === 0 ? 6 : currentDay - 1;
+            
+            let weekOffset = 0;
+            if (weekType === 'last') weekOffset = 7;
+            else if (weekType === 'last2') weekOffset = 14;
+            else if (weekType === 'last3') weekOffset = 21;
+
+            const monday = new Date(today);
+            monday.setDate(today.getDate() - diff - weekOffset);
+            
+            const dates = [];
+            for (let i = 0; i < 7; i++) {
+                const date = new Date(monday);
+                date.setDate(monday.getDate() + i);
+                dates.push(date.toISOString().split('T')[0]);
+            }
+            
+            return dates;
+        }
+        
+        function loadWeekReport() {
+            const weekType = document.getElementById('weekSelect').value;
+            const weekDates = getWeekDates(weekType);
+            
+            let totalPositive = 0;
+            let totalNegative = 0;
+            let recordedDays = 0;
+            let bestRatio = 0;
+            let bestDay = '--';
+            const dailyRatios = [];
+            const dailyPositive = [];
+            const dailyNegative = [];
+
+            weekDates.forEach(date => {
+                const record = history.find(item => item.date === date);
+                if (record) {
+                    totalPositive += record.positive;
+                    totalNegative += record.negative;
+                    recordedDays++;
+                    
+                    const ratio = record.negative === 0 ? record.positive : parseFloat(record.ratio);
+                    dailyRatios.push(ratio);
+                    dailyPositive.push(record.positive);
+                    dailyNegative.push(record.negative);
+                    
+                    if (ratio > bestRatio) {
+                        bestRatio = ratio;
+                        const d = new Date(date);
+                        bestDay = `${d.getMonth()+1}/${d.getDate()}`;
+                    }
+                } else {
+                    dailyRatios.push(0);
+                    dailyPositive.push(0);
+                    dailyNegative.push(0);
+                }
+            });
+
+            const avgRatio = totalNegative === 0 ? 
+                (totalPositive > 0 ? totalPositive + ':0' : '0:0') : 
+                (totalPositive / totalNegative).toFixed(1) + ':1';
+
+            document.getElementById('weekPositive').textContent = totalPositive;
+            document.getElementById('weekNegative').textContent = totalNegative;
+            document.getElementById('weekAvgRatio').textContent = avgRatio;
+            document.getElementById('weekBestDay').textContent = bestDay;
+            document.getElementById('weekRecordDays').textContent = recordedDays;
+
+            const lineChart = document.getElementById('weekLineChart');
+            if (!lineChart) return;
+            
+            lineChart.innerHTML = '';
+            const maxRatio = Math.max(...dailyRatios, 5);
+            const dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+            dailyRatios.forEach((ratio, index) => {
+                const bar = document.createElement('div');
+                bar.style.flex = '1';
+                bar.style.position = 'relative';
+                bar.style.borderRadius = '8px 8px 0 0';
+                bar.style.minHeight = '10px';
+                bar.style.transition = 'all 0.3s';
+                bar.style.cursor = 'pointer';
+                
+                const height = maxRatio > 0 ? (ratio / maxRatio) * 100 : 0;
+                bar.style.height = height + '%';
+                bar.style.background = ratio >= 5 ? 
+                    'linear-gradient(180deg, #2ecc71 0%, #27ae60 100%)' : 
+                    ratio >= 3 ? 
+                    'linear-gradient(180deg, #f39c12 0%, #e67e22 100%)' : 
+                    ratio > 0 ?
+                    'linear-gradient(180deg, #e74c3c 0%, #c0392b 100%)' :
+                    '#ecf0f1';
+                
+                const label = document.createElement('div');
+                label.style.position = 'absolute';
+                label.style.bottom = '-30px';
+                label.style.left = '50%';
+                label.style.transform = 'translateX(-50%)';
+                label.style.fontSize = '0.9em';
+                label.style.color = '#666';
+                label.style.whiteSpace = 'nowrap';
+                label.textContent = dayNames[index];
+                bar.appendChild(label);
+
+                if (ratio > 0) {
+                    const value = document.createElement('div');
+                    value.style.position = 'absolute';
+                    value.style.top = '-30px';
+                    value.style.left = '50%';
+                    value.style.transform = 'translateX(-50%)';
+                    value.style.fontSize = '0.85em';
+                    value.style.fontWeight = 'bold';
+                    value.style.color = '#667eea';
+                    value.style.whiteSpace = 'nowrap';
+                    value.textContent = ratio.toFixed(1);
+                    bar.appendChild(value);
+                }
+
+                lineChart.appendChild(bar);
+            });
+
+            const barChart = document.getElementById('weekBarChart');
+            if (!barChart) return;
+            
+            barChart.innerHTML = '';
+            const maxCount = Math.max(...dailyPositive, ...dailyNegative, 1);
+
+            dailyPositive.forEach((count, index) => {
+                const barGroup = document.createElement('div');
+                barGroup.style.flex = '1';
+                barGroup.style.display = 'flex';
+                barGroup.style.flexDirection = 'column';
+                barGroup.style.alignItems = 'center';
+                barGroup.style.gap = '5px';
+                barGroup.style.position = 'relative';
+                barGroup.style.height = '100%';
+                barGroup.style.justifyContent = 'flex-end';
+                
+                const posBar = document.createElement('div');
+                posBar.style.width = '100%';
+                posBar.style.height = maxCount > 0 ? ((count / maxCount) * 100) + '%' : '0';
+                posBar.style.background = 'linear-gradient(180deg, #2ecc71 0%, #27ae60 100%)';
+                posBar.style.borderRadius = '8px 8px 0 0';
+                posBar.style.minHeight = count > 0 ? '10px' : '0';
+                
+                const negBar = document.createElement('div');
+                negBar.style.width = '100%';
+                negBar.style.height = maxCount > 0 ? ((dailyNegative[index] / maxCount) * 100) + '%' : '0';
+                negBar.style.background = 'linear-gradient(180deg, #e74c3c 0%, #c0392b 100%)';
+                negBar.style.borderRadius = '8px 8px 0 0';
+                negBar.style.minHeight = dailyNegative[index] > 0 ? '10px' : '0';
+                
+                const label = document.createElement('div');
+                label.style.fontSize = '0.85em';
+                label.style.color = '#666';
+                label.style.marginTop = '5px';
+                label.textContent = dayNames[index];
+                
+                barGroup.appendChild(posBar);
+                barGroup.appendChild(negBar);
+                barGroup.appendChild(label);
+                barChart.appendChild(barGroup);
+            });
+        }
+        
+        document.getElementById('date-input').addEventListener('change', function() {
+            loadTodayData();
+            updateDisplay();
+        });
+        
+        document.addEventListener('keydown', function(e) {
+            if (e.key === '+' || e.key === '=') {
+                addPositive();
+            } else if (e.key === '-' || e.key === '_') {
+                addNegative();
+            }
+        });
+        
+        setTimeout(function() {
+            loadWeekReport();
+        }, 200);
+    </script>
+</body>
+</html> 

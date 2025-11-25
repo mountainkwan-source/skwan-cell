@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Good4Parents ❤️ Good4Children</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{
+      font-family:'Microsoft YaHei','Segoe UI',Arial,sans-serif;
+      background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+      min-height:100vh;padding:20px;
+      display:flex;flex-direction:column;align-items:center;
+    }
+
+    /* ===== 语言切换 ===== */
+    .language-switcher{
+      position:fixed;top:15px;right:15px;z-index:1000;
+      display:flex;flex-direction:column;gap:6px;
+      background:white;padding:6px;border-radius:10px;
+      box-shadow:0 4px 10px rgba(0,0,0,0.2);
+    }
+    .lang-btn{
+      border:2px solid #667eea;background:white;color:#667eea;
+      padding:6px 10px;border-radius:6px;font-weight:bold;
+      font-size:0.85em;cursor:pointer;transition:all .3s;
+    }
+    .lang-btn.active{background:#667eea;color:white;}
+
+    /* ===== Header 区 ===== */
+    .header{text-align:center;color:white;margin-top:80px;}
+    .logo{
+      display:flex;justify-content:center;align-items:center;
+      gap:40px;margin-bottom:16px;flex-wrap:nowrap;
+      max-width:100%;
+    }
+    .logo-icon{
+      width:100px;height:100px;border-radius:50%;
+      background-color:white;display:flex;justify-content:center;align-items:center;
+      box-shadow:0 6px 14px rgba(0,0,0,0.25);
+    }
+    .logo-icon img{width:80%;height:auto;}
+
+    h1.site-title{
+      font-size:2.2em;
+      font-weight:900;
+      margin-bottom:16px;
+      white-space:nowrap;
+      max-width:100%;
+      transform-origin:center;
+    }
+
+    .subtitle{font-size:1.1em;line-height:1.6;margin-bottom:6px;}
+    .subtitle2{font-size:1em;opacity:0.9;margin-bottom:50px;}
+
+    @media(max-width:480px){
+      .logo{gap:20px;}
+      .logo-icon{width:80px;height:80px;}
+      h1.site-title{
+        font-size:1.2em;
+        white-space:nowrap;
+        transform:scale(0.9);
+      }
+      .subtitle{font-size:1em;}
+      .subtitle2{font-size:0.9em;margin-bottom:40px;}
+    }
+
+    /* ===== 工具卡区 ===== */
+    .tools-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+      gap:30px;width:100%;max-width:1000px;
+    }
+    .tool-card{
+      background:white;border-radius:16px;padding:28px;cursor:pointer;
+      box-shadow:0 10px 40px rgba(0,0,0,0.25);
+      transition:transform .3s,box-shadow .3s;
+      color:#333;text-align:left;text-decoration:none;position:relative;
+    }
+    .tool-card:hover{transform:translateY(-8px) scale(1.02);}
+    .tool-icon{font-size:3em;margin-bottom:15px;}
+    .tool-title{font-size:1.4em;font-weight:bold;color:#2c3e50;margin-bottom:10px;}
+    .tool-description{font-size:0.95em;color:#555;margin-bottom:10px;line-height:1.6;}
+    .tool-description ul{margin-top:8px;margin-left:20px;list-style:disc;}
+    .tool-badge{
+      background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+      color:white;padding:6px 14px;border-radius:18px;font-size:0.85em;font-weight:bold;
+      display:inline-block;
+    }
+    .tool-card img.qr{width:100px;display:block;margin:12px auto 0;}
+
+    /* ===== 即将推出 ===== */
+    h2.section-title{color:white;margin:60px 10px 20px;text-align:center;}
+    .coming-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+      gap:20px;width:100%;max-width:900px;
+    }
+    .footer{text-align:center;color:white;margin:60px 0 20px;opacity:0.9;font-size:0.9em;}
+  </style>
+</head>
+
+<body>
+  <!-- 语言切换：只保留 简中 / EN -->
+  <div class="language-switcher">
+    <button class="lang-btn active" onclick="switchLang('zh-CN')">简中</button>
+    <button class="lang-btn" onclick="switchLang('en')">EN</button>
+  </div>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="logo">
+      <div class="logo-icon"><img src="parent.png" alt="父母"></div>
+      <div class="logo-icon"><img src="child.png" alt="孩子"></div>
+    </div>
+    <h1 class="site-title">Good4Parents ❤️ Good4Children</h1>
+
+    <!-- 默认简体 -->
+    <p class="subtitle" data-i18n="subtitle">科学育儿工具箱｜用数据守护亲子关系</p>
+    <p class="subtitle2" data-i18n="subtitle2">基于心理学研究，帮助您成为更好的父母</p>
+  </div>
+
+  <!-- ===== 工具卡区 ===== -->
+  <div class="tools-grid">
+    <!-- 问卷卡 -->
+    <div class="tool-card" onclick="openSurvey()">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <span class="tool-icon">🧩</span>
+        <span class="tool-badge" style="background:#ff7a00;" data-i18n="badge-featured">特别推荐</span>
+      </div>
+      <h2 class="tool-title" data-i18n="survey-title">亲子特质配搭的教养方式问卷</h2>
+
+      <div class="tool-description" data-i18n="survey-desc">
+        <ul>
+          <li>了解孩子独特的气质特征，找到最合适的教养方式。</li>
+          <li>探索家长的教养特质，发现互动中的潜在冲突点。</li>
+          <li>完成后即可获得一份<strong>个别化儿童先天气质报告</strong>。</li>
+        </ul>
+        <p style="margin-top:10px;">🚀 填写时间：约15–20分钟。</p>
+      </div>
+      <span class="tool-badge" data-i18n="survey-btn">立即填写</span>
+      <img id="surveyQR" class="qr" src="parent-trait-survey-qr-cn.jpg" alt="问卷 QR code">
+    </div>
+
+    <!-- 互动追踪卡 -->
+    <div class="tool-card" onclick="goToTracker()">
+      <span class="tool-icon">📊</span>
+      <h2 class="tool-title" data-i18n="tracker-title">亲子互动正负比例检测</h2>
+      <div class="tool-description" data-i18n="tracker-desc">
+        <ul>
+          <li>每天快速记录亲子「正向 vs 负向」互动。</li>
+          <li>即时图表呈现情绪连接趋势。</li>
+          <li>运用科学的 5:1 正向比例，打造亲密亲子关系。</li>
+        </ul>
+        <p style="margin-top:10px;">📈 对话、拥抱、鼓励，都能变成正向数据！</p>
+      </div>
+      <span class="tool-badge" data-i18n="use-now">立即使用</span>
+    </div>
+
+    <!-- 亲子情绪翻译机卡（已移除“最新推出”徽章） -->
+    <div class="tool-card" onclick="goToEmotionTranslator()">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <span class="tool-icon">💖</span>
+        <!-- 此处原有“最新推出”徽章已删除 -->
+      </div>
+      <h2 class="tool-title" data-i18n="emotion-title">亲子情绪翻译机</h2>
+      <div class="tool-description" data-i18n="emotion-desc">
+        <p>当孩子哭闹、生气或抗拒时，帮你「翻译」他的内在语言。</p>
+        <ul>
+          <li>输入具体情境与年龄，即可获得对应的情绪与需求。</li>
+          <li>教你如何安抚与回应，化解冲突。</li>
+          <li>支持笔记、导出及社交软件分享。</li>
+        </ul>
+        <p style="margin-top:8px;color:#764ba2;">💡 用心理学方式「翻译」孩子的心。</p>
+      </div>
+      <span class="tool-badge" data-i18n="emotion-btn">立即体验</span>
+    </div>
+  </div>
+
+  <!-- ===== 即将推出 ===== -->
+  <h2 class="section-title">🌟 <span data-i18n="coming-section-title">即将推出</span></h2>
+  <div class="coming-grid">
+    <div class="tool-card">
+      <span class="tool-icon">🎯</span>
+      <h2 class="tool-title" data-i18n="upcoming1-title">儿童情绪识别能力测验</h2>
+      <p class="tool-description" data-i18n="upcoming1-desc">帮助家长了解孩子情绪识别与表达能力，目前开发中。</p>
+      <span class="tool-badge" data-i18n="coming-soon">即将推出</span>
+    </div>
+    <div class="tool-card">
+      <span class="tool-icon">💬</span>
+      <h2 class="tool-title" data-i18n="upcoming2-title">亲子沟通模式分析</h2>
+      <p class="tool-description" data-i18n="upcoming2-desc">分析家庭互动语气与沟通风格，提供改善策略。</p>
+      <span class="tool-badge" data-i18n="coming-soon">即将推出</span>
+    </div>
+    <div class="tool-card">
+      <span class="tool-icon">🧠</span>
+      <h2 class="tool-title" data-i18n="upcoming3-title">教养风格自我检测</h2>
+      <p class="tool-description" data-i18n="upcoming3-desc">评估家长教养风格倾向，帮助你了解自身优势与挑战。</p>
+      <span class="tool-badge" data-i18n="coming-soon">即将推出</span>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer" data-i18n="footer">© 2025 Good4Parents ❤️ Good4Children</div>
+
+  <!-- ===== JS 语言与功能 ===== -->
+  <script>
+    const translations = {
+      "zh-CN": {
+        "subtitle":"科学育儿工具箱｜用数据守护亲子关系",
+        "subtitle2":"基于心理学研究，帮助您成为更好的父母",
+
+        "badge-featured":"特别推荐",
+        "badge-new":"最新推出",
+
+        "survey-title":"亲子特质配搭的教养方式问卷",
+        "survey-desc":`
+          <ul>
+            <li>了解孩子独特的气质特征，找到最合适的教养方式。</li>
+            <li>探索家长的教养特质，发现互动中的潜在冲突点。</li>
+            <li>完成后即可获得一份<strong>个别化儿童先天气质报告</strong>。</li>
+          </ul>
+          <p style="margin-top:10px;">🚀 填写时间：约15–20分钟。</p>`,
+        "survey-btn":"立即填写",
+
+        "tracker-title":"亲子互动正负比例检测",
+        "tracker-desc":`
+          <ul>
+            <li>每天快速记录亲子「正向 vs 负向」互动。</li>
+            <li>即时图表呈现情绪连接趋势。</li>
+            <li>运用科学的 5:1 正向比例，打造亲密亲子关系。</li>
+          </ul>
+          <p style="margin-top:10px;">📈 对话、拥抱、鼓励，都能变成正向数据！</p>`,
+        "use-now":"立即使用",
+
+        "emotion-title":"亲子情绪翻译机",
+        "emotion-desc":`
+          <p>当孩子哭闹、生气或抗拒时，帮你「翻译」他的内在语言。</p>
+          <ul>
+            <li>输入具体情境与年龄，即可获得对应的情绪与需求。</li>
+            <li>教你如何安抚与回应，化解冲突。</li>
+            <li>支持笔记、导出及社交软件分享。</li>
+          </ul>
+          <p style="margin-top:8px;color:#764ba2;">💡 用心理学方式「翻译」孩子的心。</p>`,
+        "emotion-btn":"立即体验",
+
+        "coming-section-title":"即将推出",
+        "upcoming1-title":"儿童情绪识别能力测验",
+        "upcoming1-desc":"帮助家长了解孩子情绪识别与表达能力，目前开发中。",
+        "upcoming2-title":"亲子沟通模式分析",
+        "upcoming2-desc":"分析家庭互动语气与沟通风格，提供改善策略。",
+        "upcoming3-title":"教养风格自我检测",
+        "upcoming3-desc":"评估家长教养风格倾向，帮助你了解自身优势与挑战。",
+        "coming-soon":"即将推出",
+
+        "footer":"© 2025 Good4Parents ❤️ Good4Children"
+      },
+      "en": {
+        "subtitle":"Science-based parenting toolbox | Use data to nurture your parent–child bond",
+        "subtitle2":"Grounded in psychology research to help you become a better parent",
+
+        "badge-featured":"Featured",
+        "badge-new":"New",
+
+        "survey-title":"Parent–Child Traits & Parenting Style Questionnaire",
+        "survey-desc":`
+          <p>
+            Currently available only in Chinese (Simplified).<br>
+            This button will open the Chinese survey page.
+          </p>
+          <p style="margin-top:10px;">Survey available in Chinese only.</p>`,
+        "survey-btn":"Open survey",
+
+        "tracker-title":"Positive vs Negative Interaction Tracker",
+        "tracker-desc":`
+          <ul>
+            <li>Log your daily positive vs negative interactions with your child in seconds.</li>
+            <li>Visualize emotional connection trends over time.</li>
+            <li>Apply the science‑backed 5:1 positive ratio to build a closer relationship.</li>
+          </ul>
+          <p style="margin-top:10px;">📈 Every conversation, hug and word of encouragement can become positive data!</p>`,
+        "use-now":"Use now",
+
+        "emotion-title":"Parent–Child Emotion Translator",
+        "emotion-desc":`
+          <p>When your child cries, gets angry or refuses to cooperate, instantly “translate” what they may really feel.</p>
+          <ul>
+            <li>Describe the situation and age to get likely emotions and unmet needs.</li>
+            <li>Get concrete suggestions on how to soothe and respond.</li>
+            <li>Supports notes and sharing.</li>
+          </ul>
+          <p style="margin-top:8px;color:#764ba2;">💡 Use psychology to “translate” your child’s inner world.</p>`,
+        "emotion-btn":"Try now",
+
+        "coming-section-title":"Coming soon",
+        "upcoming1-title":"Children’s Emotion Recognition Test",
+        "upcoming1-desc":"Helps parents understand children’s emotion recognition and expression skills. In development.",
+        "upcoming2-title":"Parent–Child Communication Pattern Analysis",
+        "upcoming2-desc":"Analyzes family communication tone and style, and suggests improvements.",
+        "upcoming3-title":"Parenting Style Self‑Assessment",
+        "upcoming3-desc":"Understand your parenting strengths and growth areas.",
+        "coming-soon":"Coming soon",
+
+        "footer":"© 2025 Good4Parents ❤️ Good4Children"
+      }
+    };
+
+    let currentLang = "zh-CN";
+
+    function applyTranslations(lang){
+      document.querySelectorAll('[data-i18n]').forEach(el=>{
+        const key = el.getAttribute('data-i18n');
+        const dict = translations[lang];
+        if(dict && dict[key] !== undefined){
+          el.innerHTML = dict[key];
+        }
+      });
+      document.documentElement.lang = lang;
+    }
+
+    function switchLang(lang){
+      currentLang = lang;
+
+      document.querySelectorAll('.lang-btn').forEach(b=>b.classList.remove('active'));
+      const btn = document.querySelector(`.lang-btn[onclick="switchLang('${lang}')"]`);
+      if(btn) btn.classList.add('active');
+
+      applyTranslations(lang);
+      updateQR();
+
+      try{ localStorage.setItem('preferredLang', lang); }catch(e){}
+    }
+
+    function openSurvey(){
+      if(currentLang==="zh-CN"){
+        // 简体问卷
+        window.open('https://www.wjx.cn/vm/Pt7qOkx.aspx','_blank');
+      } else {
+        // 英文也先导向简体问卷说明页
+        window.open('https://www.wjx.cn/vm/Pt7qOkx.aspx','_blank');
+      }
+    }
+
+    function updateQR(){
+      const qr = document.getElementById('surveyQR');
+      if(!qr) return;
+      qr.src = "parent-trait-survey-qr-cn.jpg"; // 目前简体 / 英共用同一 QR
+    }
+
+    function goToTracker(){
+      if(currentLang==="zh-CN") window.location.href="interaction-tracker-zh-CN.html";
+      else window.location.href="interaction-tracker-en.html";
+    }
+
+    function goToEmotionTranslator(){
+      if(currentLang==="zh-CN") window.location.href="emotion-translator-zh-CN.html";
+      else window.location.href="emotion-translator-en.html";
+    }
+
+    // 初始化：优先用 localStorage，否则默认简体
+    document.addEventListener('DOMContentLoaded', () => {
+      let lang = "zh-CN";
+      try{
+        const saved = localStorage.getItem('preferredLang');
+        if(saved && translations[saved]) lang = saved;
+      }catch(e){}
+      switchLang(lang);
+    });
+  </script>
+</body>
+</html>
